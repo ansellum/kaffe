@@ -44,6 +44,7 @@ struct BagArgs {
 #[derive(Subcommand)]
 enum BagCommands {
     Add,
+    Remove,
     List,
 }
 
@@ -80,7 +81,34 @@ enum BrewCommands {
 fn main() {
     let args = Cli::parse();
 
-    // match &args.command {
-    //    TODO
-    // }
+    match args.command {
+        Modes::Bag(bag) => {
+            match bag.command {
+                BagCommands::Add => println!("kaffe bag add"),
+                BagCommands::Remove => println!("kaffe bag remove"),
+                BagCommands::List => println!("kaffe bag list"),
+            }
+        }
+        Modes::Coffee(coffee) => {
+            match coffee.command {
+                CoffeeCommands::Add => println!("kaffe coffee add"),
+                CoffeeCommands::Remove => println!("kaffe coffee remove"),
+                CoffeeCommands::List => println!("kaffe coffee list"),
+            }
+        }
+        Modes::Equipment(equipment) => {
+            match equipment.command {
+                EquipmentCommands::Add => println!("kaffe equipment add"),
+                EquipmentCommands::Remove => println!("kaffe equipment remove"),
+                EquipmentCommands::List => println!("kaffe equipment list"),
+            }
+        }
+        Modes::Brew(brew) => {
+            match brew.command {
+                BrewCommands::Add => println!("kaffe brew add"),
+                BrewCommands::Remove => println!("kaffe brew remove"),
+                BrewCommands::List => println!("kaffe brew list"),
+            }
+        }
+    }
 }
