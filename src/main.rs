@@ -1,6 +1,7 @@
 use clap::{Args, Parser, Subcommand};
 
 //pub mod bean;
+pub mod equipment;
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -82,6 +83,13 @@ fn main() {
     let args = Cli::parse();
 
     match args.command {
+        Modes::Equipment(equipment) => {
+            match equipment.command {
+                EquipmentCommands::Add => println!("kaffe equipment add"),
+                EquipmentCommands::Remove => println!("kaffe equipment remove"),
+                EquipmentCommands::List => println!("kaffe equipment list"),
+            }
+        }
         Modes::Bag(bag) => {
             match bag.command {
                 BagCommands::Add => println!("kaffe bag add"),
@@ -94,13 +102,6 @@ fn main() {
                 CoffeeCommands::Add => println!("kaffe coffee add"),
                 CoffeeCommands::Remove => println!("kaffe coffee remove"),
                 CoffeeCommands::List => println!("kaffe coffee list"),
-            }
-        }
-        Modes::Equipment(equipment) => {
-            match equipment.command {
-                EquipmentCommands::Add => println!("kaffe equipment add"),
-                EquipmentCommands::Remove => println!("kaffe equipment remove"),
-                EquipmentCommands::List => println!("kaffe equipment list"),
             }
         }
         Modes::Brew(brew) => {
