@@ -1,0 +1,41 @@
+{
+    "equipment": [
+        {
+            "name": "Niche Zero",
+            "type": "grinder",
+            "purchase_date": "2024-01-01T00:00:00.000Z",
+            "price_usdct": "50000",
+            "timestamp": "2026-03-27T22:18:19Z"
+        },
+        {
+            "name": "KinGrinder K6",
+            "type": "grinder",
+            "purchase_date": "2024-01-01T00:00:00.000Z",
+            "price_usdct": "12000",
+            "timestamp": "2026-03-27T22:18:19Z"
+        },
+        {
+            "name": "Rancilio Silvia",
+            "type": "brewer",
+            "purchase_date": "2024-01-01T00:00:00.000Z",
+            "price_usdct": "30000",
+            "timestamp": "2026-03-27T22:18:19Z"
+        },
+        {
+            "name": "V60",
+            "type": "brewer",
+            "purchase_date": "2022-01-01T00:00:00.000Z",
+            "price_usdct": "700",
+            "timestamp": "2026-03-27T22:18:19Z"
+        }
+    ],
+    "coffee": {
+        
+    },
+    "bag": {
+        
+    },
+    "brew": {
+        
+    }
+}
