@@ -97,6 +97,10 @@ fn main() -> Result<()> {
     let conn = Connection::open_in_memory()?;
 
     match args.command {
+<<<<<<< HEAD
+=======
+
+>>>>>>> d961c7c018749f13745d470d3d833a05842af36d
         // WIZARD
         Modes::Equipment(equipment) => {
             match equipment.command {
@@ -132,7 +136,10 @@ fn main() -> Result<()> {
 
         }
     }
+<<<<<<< HEAD
 
     Ok(())
+=======
+>>>>>>> d961c7c018749f13745d470d3d833a05842af36d
 }
 
