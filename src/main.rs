@@ -1,8 +1,15 @@
 use clap::{Args, Parser, Subcommand};
 use rusqlite::{Connection, Result};
+use std::error::Error;
+use std::fs::File;
+// use std::io::BufReader;
+// use std::path::Path;
 
 //pub mod bean;
 pub mod equipment;
+pub mod bag;
+pub mod coffee;
+pub mod brew;
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -19,7 +26,7 @@ enum Modes {
     Coffee(CoffeeArgs),
     Brew(BrewArgs),
     Import {
-        file: String,
+        path: String,
     }
 }
 
@@ -91,7 +98,23 @@ enum BrewCommands {
 // IMPORT COMMANDS //
 /////////////////////
 
-fn main() -> Result<()> {
+// fn open_file<P: AsRef<Path>>(path: P) -> Result<> {
+//     let file = File::open(path)?;
+//     let mut buf_reader = BufReader::new(file);
+//     let mut contents = String::new();
+//     buf_reader.read_to_string(&mut contents)?;
+//     Ok(())
+
+// }
+
+// fn read_data_from_file<P: AsRef<Path>, T>(path: P) -> Result<Vec<T>, Box<dyn Error>> {
+//     let file = File::open(path)?;
+//     let reader = BufReader::new(file);
+
+// }
+
+
+fn main() -> Result<(), Box<dyn Error>> {
     // Initialization
     let args = Cli::parse();
     let conn = Connection::open_in_memory()?;
@@ -128,8 +151,9 @@ fn main() -> Result<()> {
         }
 
         // MAIN
-        Modes::Import { file } => {
-
+        Modes::Import { path } => {
+            let message = File::open(path)?;
+            //println!("{}", message);
         }
     }
 
