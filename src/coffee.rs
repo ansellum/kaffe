@@ -3,11 +3,14 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 enum CoffeeType {
+    #[serde(rename = "single-origin")]
     SingleOrigin,
+    #[serde(rename = "blend")]
     Blend
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
 enum RoastLevel {
     Light,
     Medium,
