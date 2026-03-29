@@ -1,10 +1,10 @@
 use clap::{Args, Parser, Subcommand};
-use std::error::Error;
+use std::{error::Error};
 use std::path::Path;
 use std::ffi::OsStr;
 use std::fs::File;
-use std::io::BufReader;
-use serde::{Serialize, Deserialize};
+use std::io;
+use serde::{Deserialize};
 
 pub mod equipment;
 pub mod bag;
@@ -110,26 +110,52 @@ struct JSONItems {
 /////////////////////
 
 fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<dyn Error> */ 
-    let extension =  Path::new(path)
+    let file = File::open(path)?; /* Generic Box<dyn Error> */ 
+    let reader = io::BufReader::new(file);
+    
+    let extension = Path::new(path)
         .extension()
         .and_then(OsStr::to_str)
         .expect("Invalid file type. Please use a JSON or CSV."); /* .expect() calls panic! macro */ 
     
     match extension {
         "json" => {
-            let file = File::open(path)?; /* Generic Box<dyn Error> */ 
-            let reader = BufReader::new(file);
-
             let j: JSONItems = serde_json::from_reader(reader)?;
-
             for equipment in j.equipment {
-                println!("{:?}", equipment);
+                dbg!(equipment);
+                // TODO: Now that equipment is serialized, put into SQLite db!
             }
-
-            //println!("Equipment {} added as a {:?}!", e.name, e.equipment_type);
+            for coffee in j.coffee {
+                dbg!(coffee);
+                // TODO: Now that equipment is serialized, put into SQLite db!
+            }
+            for bag in j.bag {
+                dbg!(bag);
+                // TODO: Now that equipment is serialized, put into SQLite db!
+            }
+            for brew in j.brew {
+                dbg!(brew);
+                // TODO: Now that equipment is serialized, put into SQLite db!
+            }
         }
         "csv" => {
-            
+            let mut rdr = csv::Reader::from_reader(reader);
+
+            // Wizard
+            let mut input = String::new();
+
+            println!("What type of item are you importing?  ");
+
+            io::stdin()
+                .read_line(&mut input)
+                .expect("Failed to read line");
+
+            println!("Importing {input}...");
+
+            // for result in rdr.deserialize() {
+            //     let record = result?;
+            //     println!("{:?}", record);
+            // }
         },
         _ => panic!("invalid type") /* panic! macro */ 
     }
