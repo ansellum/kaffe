@@ -2,6 +2,9 @@ use clap::{Args, Parser, Subcommand};
 use std::error::Error;
 use std::path::Path;
 use std::ffi::OsStr;
+use std::fs::File;
+use std::io::BufReader;
+use serde::{Serialize, Deserialize};
 
 pub mod equipment;
 pub mod bag;
@@ -27,9 +30,9 @@ enum Modes {
     }
 }
 
-/////////////////////
-// WIZARD COMMANDS //
-/////////////////////
+////////////////////
+// WIZARD STRUCTS //
+////////////////////
 #[derive(Args)]
 #[command(args_conflicts_with_subcommands = true)]
 #[command(flatten_help = true)]
@@ -90,15 +93,48 @@ enum BrewCommands {
     List,
 }
 
+////////////////////
+// IMPORT STRUCTS //
+////////////////////
+
+#[derive(Deserialize)]
+struct JSONItems {
+    equipment: Vec<equipment::Equipment>,
+    coffee: Vec<coffee::Coffee>,
+    bag: Vec<bag::Bag>,
+    brew: Vec<brew::Brew>,
+}
 
 /////////////////////
 // IMPORT COMMANDS //
 /////////////////////
 
-fn get_extension_from_filename(filename: &str) -> Option<&str>  {
-    Path::new(filename)
+fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<dyn Error> */ 
+    let extension =  Path::new(path)
         .extension()
         .and_then(OsStr::to_str)
+        .expect("Invalid file type. Please use a JSON or CSV."); /* .expect() calls panic! macro */ 
+    
+    match extension {
+        "json" => {
+            let file = File::open(path)?; /* Generic Box<dyn Error> */ 
+            let reader = BufReader::new(file);
+
+            let j: JSONItems = serde_json::from_reader(reader)?;
+
+            for equipment in j.equipment {
+                println!("{:?}", equipment);
+            }
+
+            //println!("Equipment {} added as a {:?}!", e.name, e.equipment_type);
+        }
+        "csv" => {
+            
+        },
+        _ => panic!("invalid type") /* panic! macro */ 
+    }
+
+    Ok(())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -137,28 +173,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // MAIN
-        Modes::Import { file } => {
-            // match get_extension_from_filename(&path) {
-            //     None => panic!("Invalid file type. File must be either CSV or JSON"),
-            //     Some(extension) => {
-            //         match extension {
-            //             _ => panic!("Invalid file type. File must be either CSV or JSON"),
-            //             "json" => println!("json"),
-            //             "csv" => println!("json"),
-            //         }
-            //     }
-            // }
-
-            let extension = get_extension_from_filename(&file)
-                .expect("Invalid file type. Please use a JSON or CSV.");
-            
-            match extension {
-                "json" => println!("json"),
-                "csv" => println!("csv"),
-                _ => panic!("invalid type")
-            }
-         
-        }
+        Modes::Import { file } => import_from_file(&file)?
     }
 
     Ok(())
