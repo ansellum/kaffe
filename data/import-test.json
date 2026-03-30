@@ -1,43 +1,36 @@
 {
     "equipment": [
         {
-            "id": 0,
             "name": "Niche Zero",
             "equipment_type": "grinder",
             "purchase_date": "2024-01-01T00:00:00.000Z",
             "price_ct": 50000
         },
         {
-            "id": 1,
             "name": "KinGrinder K6",
             "equipment_type": "grinder",
             "purchase_date": "2024-01-01T00:00:00.000Z",
             "price_ct": 12000
         },
         {
-            "id": 1,
-
             "name": "Timemore C2",
             "equipment_type": "grinder",
             "purchase_date": "2021-01-01T00:00:00.000Z",
             "price_ct": 8000
         },
         {
-            "id": 2,
             "name": "Rancilio Silvia",
             "equipment_type": "brewer",
             "purchase_date": "2024-01-01T00:00:00.000Z",
             "price_ct": 30000
         },
         {
-            "id": 3,
             "name": "V60",
             "equipment_type": "brewer",
             "purchase_date": "2022-01-01T00:00:00.000Z",
             "price_ct": 700
         },
         {
-            "id": 4,
             "name": "Aeropress",
             "equipment_type": "brewer",
             "purchase_date": "2023-01-01T00:00:00.000Z",
