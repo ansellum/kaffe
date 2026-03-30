@@ -1,18 +1,18 @@
 id,roaster,name,coffee_type,country,region,farm,producer,varietals,altitude_m,altitude_lower_m,altitude_upper_m,process,roast_level,tasting_notes,decaf
-1,Pachamama Coffee,Ethiopia Yirgacheffe,single-origin,Ethiopia,Yirgacheffe,Oromia Coffee Farmers Cooperative Union ,Oromia Coffee Farmers Cooperative Union ,,,,,washed,light,lemon;jasmine;honey,0
-2,Pachamama Coffee,Guatemala,single-origin,Guatemala,"Santa Clara, Solola",Manos Campesinas,Manos Campesinas,,,,,,medium,pear;caramel;cacao nib,0
-3,Pachamama Coffee,Perú,single-origin,Perú,Santa Teresa,Cocla Cooperative,Cocla Cooperative,,,,,,medium,cherry;cream;chocolate,0
-4,Pachamama Coffee,Nicaragua,single-origin,Nicaragua,Rio Coco,Prodecoop Cooperative,Prodecoop Cooperative,,,,,,medium,floral;citrus;chocolate,0
-5,Pachamama Coffee,Farmer’s,blend,Americas,,,,,,,,,dark,rich;butterscotch;walnut,0
-6,Pachamama Coffee,Machu Picchu,single-origin,Perú,Santa Teresa,Cocla Cooperative,Cocla Cooperative,,,,,,dark,rich;caramel;chocolate,0
-7,Happy Mug,Animated Espresso,blend,,,,,,,,,,dark,caramel;complex;potent,0
-8,S&W Craft Roasting,DR Congo Kivu Hutwe Honey,single-origin,Democratic Republic of the Congo,Kivu,South Kivu Farmers,Hutwe,bourbon,,1750,2000,honey,light,raisin;peach;figs;spice bread,0
-9,S&W Craft Roasting,Burundi Kayanza Ninga Bumba Anaerobic Honey,single-origin,Burundi,"Bumba, Kayanza",Bumba Farmers,Ninga Coffee Washing Station,bourbon,2200,,,anaerobic honey,,kumquat;lemon;lime,0
-10,S&W Craft Roasting,Rwanda Dukorere Kawa Bukure Natural ,single-origin,Rwanda,Bukure,Bukure Farmers,Nova Coffee,bourbon,,1800,2200,natural,light,stonefruit;blueberries;blackberry jam,0
-11,S&W Craft Roasting,Sumatra Bener Meriah CSC Abyssinia and Typica,single-origin,Indonesia,"Bener Meriah, Aceh",Central Sumatera Coffee,Central Sumatera Coffee,"abyssinia,typica",,1300,1400,wet-hulled,light,blood orange;five-spice;lavendar,0
-12,Pachamama Coffee,Espresso Blend,blend,Americas,,,,,,,,,dark,complex;plum;chocolate,0
-13,S&W Craft Roasting,Ethiopia Mullugeta Muntasha Sidama Arbegona Natural,single-origin,Ethiopia,Sidama,Dawencho,Mullugeta Muntasha ,jarc 74158,2150,,,natural,light,red clover;wildflowers;red and blue fruits,0
-14,S&W Craft Roasting,Ecuador Pichincha Galo Morales Natural Gesha,single-origin,Ecuador,Pichincha,Finca Cruz Loma,Galo Fernando Morales Flores,gesha,1450,,,natural,light,red fruits;florals;melon;spice,0
-15,S&W Craft Roasting,Papua New Guinea Jiwaka Arufa Natural,single-origin,Papua New Guinea,"Jiwaka, Western Highlands",Kagamuga Dry Mill ,Monpi Coffee,"blue mountain,arusha,mundo novo,bourbon",,1520,1770,natural,light,graham;caramel;mixed berries ,0
-16,S&W Craft Roasting,Sumatra Bener Meriah CSC Abyssinia and Typica – MEDIUM roast,single-origin,Indonesia,"Bener Meriah, Aceh",Central Sumatera Coffee,Central Sumatera Coffee,"abyssinia,typica",,1300,1400,wet-hulled,medium,blood orange;rose;spice,0
-17,Pachamama Coffee,Ethiopia Sidama,single-origin,Ethiopia,Sidama,Oromia Coffee Farmers Cooperative Union ,Oromia Coffee Farmers Cooperative Union ,,,,,natural,light,blackberry;honey;cacao,0
+1,Pachamama Coffee,Ethiopia Yirgacheffe,single-origin,Ethiopia,Yirgacheffe,Oromia Coffee Farmers Cooperative Union ,Oromia Coffee Farmers Cooperative Union ,,,,,washed,light,lemon;jasmine;honey,false
+2,Pachamama Coffee,Guatemala,single-origin,Guatemala,"Santa Clara, Solola",Manos Campesinas,Manos Campesinas,,,,,,medium,pear;caramel;cacao nib,false
+3,Pachamama Coffee,Perú,single-origin,Perú,Santa Teresa,Cocla Cooperative,Cocla Cooperative,,,,,,medium,cherry;cream;chocolate,false
+4,Pachamama Coffee,Nicaragua,single-origin,Nicaragua,Rio Coco,Prodecoop Cooperative,Prodecoop Cooperative,,,,,,medium,floral;citrus;chocolate,false
+5,Pachamama Coffee,Farmer’s,blend,Americas,,,,,,,,,dark,rich;butterscotch;walnut,false
+6,Pachamama Coffee,Machu Picchu,single-origin,Perú,Santa Teresa,Cocla Cooperative,Cocla Cooperative,,,,,,dark,rich;caramel;chocolate,false
+7,Happy Mug,Animated Espresso,blend,,,,,,,,,,dark,caramel;complex;potent,false
+8,S&W Craft Roasting,DR Congo Kivu Hutwe Honey,single-origin,Democratic Republic of the Congo,Kivu,South Kivu Farmers,Hutwe,bourbon,,1750,2000,honey,light,raisin;peach;figs;spice bread,false
+9,S&W Craft Roasting,Burundi Kayanza Ninga Bumba Anaerobic Honey,single-origin,Burundi,"Bumba, Kayanza",Bumba Farmers,Ninga Coffee Washing Station,bourbon,2200,,,anaerobic honey,light,kumquat;lemon;lime,false
+10,S&W Craft Roasting,Rwanda Dukorere Kawa Bukure Natural ,single-origin,Rwanda,Bukure,Bukure Farmers,Nova Coffee,bourbon,,1800,2200,natural,light,stonefruit;blueberries;blackberry jam,false
+11,S&W Craft Roasting,Sumatra Bener Meriah CSC Abyssinia and Typica,single-origin,Indonesia,"Bener Meriah, Aceh",Central Sumatera Coffee,Central Sumatera Coffee,abyssinia;typica,,1300,1400,wet-hulled,light,blood orange;five-spice;lavendar,false
+12,Pachamama Coffee,Espresso Blend,blend,Americas,,,,,,,,,dark,complex;plum;chocolate,false
+13,S&W Craft Roasting,Ethiopia Mullugeta Muntasha Sidama Arbegona Natural,single-origin,Ethiopia,Sidama,Dawencho,Mullugeta Muntasha ,jarc 74158,2150,,,natural,light,red clover;wildflowers;red and blue fruits,false
+14,S&W Craft Roasting,Ecuador Pichincha Galo Morales Natural Gesha,single-origin,Ecuador,Pichincha,Finca Cruz Loma,Galo Fernando Morales Flores,gesha,1450,,,natural,light,red fruits;florals;melon;spice,false
+15,S&W Craft Roasting,Papua New Guinea Jiwaka Arufa Natural,single-origin,Papua New Guinea,"Jiwaka, Western Highlands",Kagamuga Dry Mill ,Monpi Coffee,blue mountain;arusha;mundo novo;bourbon,,1520,1770,natural,light,graham;caramel;mixed berries ,false
+16,S&W Craft Roasting,Sumatra Bener Meriah CSC Abyssinia and Typica – MEDIUM roast,single-origin,Indonesia,"Bener Meriah, Aceh",Central Sumatera Coffee,Central Sumatera Coffee,abyssinia;typica,,1300,1400,wet-hulled,medium,blood orange;rose;spice,false
+17,Pachamama Coffee,Ethiopia Sidama,single-origin,Ethiopia,Sidama,Oromia Coffee Farmers Cooperative Union ,Oromia Coffee Farmers Cooperative Union ,,,,,natural,light,blackberry;honey;cacao,false
