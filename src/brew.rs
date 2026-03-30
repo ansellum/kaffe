@@ -3,10 +3,10 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Brew {
-    id: Option<i32>,
-    bag_id: Option<i32>,
-    grinder_id: Option<i32>,
-    brewer_id: Option<i32>,
+    id: Option<u32>,
+    bag_id: Option<u32>,
+    grinder_id: Option<u32>,
+    brewer_id: Option<u32>,
     timestamp: Timestamp,
     grind_level: u16,
     coffee_g: u16,

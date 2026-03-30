@@ -20,21 +20,21 @@ enum RoastLevel {
 #[derive(Debug, Deserialize)]
 pub struct Coffee {
     id: u32,
-    timestamp: Timestamp,
+    timestamp: Timestamp, // Timestamp = time inputted into database
 
     roaster: String,
     name: String,
     roast_level: RoastLevel,
     coffee_type: CoffeeType,
     country: Option<String>,
-    region: Option<Vec<String>>,
+    region: Option<String>, // Not Vec<> for deserialization
     farm: Option<String>,
     producer: Option<String>,
-    varietals: Option<Vec<String>>,
+    varietals: Option<String>, // Not Vec<> for deserialization
     altitude_m: Option<u16>,
-    altitutde_lower_m: Option<u16>,
-    altitutde_upper_m: Option<u16>,
+    altitude_lower_m: Option<u16>,
+    altitude_upper_m: Option<u16>,
     process: Option<String>,
-    tasting_notes: Vec<String>,
+    tasting_notes: String, // Not Vec<> for deserialization
     decaf: bool,
 }
