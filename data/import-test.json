@@ -5,7 +5,7 @@
             "name": "Niche Zero",
             "equipment_type": "grinder",
             "purchase_date": "2024-01-01T00:00:00.000Z",
-            "price_usdct": 50000,
+            "price_ct": 50000,
             "timestamp": "2026-03-27T22:18:19Z"
         },
         {
@@ -13,7 +13,7 @@
             "name": "KinGrinder K6",
             "equipment_type": "grinder",
             "purchase_date": "2024-01-01T00:00:00.000Z",
-            "price_usdct": 12000,
+            "price_ct": 12000,
             "timestamp": "2026-03-27T22:18:19Z"
         },
         {
@@ -22,7 +22,7 @@
             "name": "Timemore C2",
             "equipment_type": "grinder",
             "purchase_date": "2021-01-01T00:00:00.000Z",
-            "price_usdct": 8000,
+            "price_ct": 8000,
             "timestamp": "2026-03-27T22:18:19Z"
         },
         {
@@ -30,7 +30,7 @@
             "name": "Rancilio Silvia",
             "equipment_type": "brewer",
             "purchase_date": "2024-01-01T00:00:00.000Z",
-            "price_usdct": 30000,
+            "price_ct": 30000,
             "timestamp": "2026-03-27T22:18:19Z"
         },
         {
@@ -38,7 +38,7 @@
             "name": "V60",
             "equipment_type": "brewer",
             "purchase_date": "2022-01-01T00:00:00.000Z",
-            "price_usdct": 700,
+            "price_ct": 700,
             "timestamp": "2026-03-27T22:18:19Z"
         },
         {
@@ -46,7 +46,7 @@
             "name": "Aeropress",
             "equipment_type": "brewer",
             "purchase_date": "2023-01-01T00:00:00.000Z",
-            "price_usdct": 4000,
+            "price_ct": 4000,
             "timestamp": "2026-03-27T22:18:19Z"
         }
     ],
