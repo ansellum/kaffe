@@ -13,4 +13,5 @@ A self-hosted coffee tracking app built using Rust
     - [x] Equipment is in json form
     - [ ] Bag and Coffee are in csv form
         - IDEA! Give structs w/ complex fields (e.g. Vec<>) a dedicated CSV constructor. CSV constructor can be another struct with String fields, wherein the String fields are constructed into vectors during runtime.
+        - Better idea: Use a `_str` variant of each `Vec<String>` field, and figure out how to use serde to deserialize from that `_str` field
 - [ ] Begin wizard
