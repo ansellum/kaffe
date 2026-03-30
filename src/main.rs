@@ -141,26 +141,39 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<d
             // Wizard
             let mut input = String::new();
 
-            println!("What type of item are you importing?  ");
-
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
-
+            // TODO: Replace with auto-check
+            println!("What type of item are you importing?");
+            io::stdin().read_line(&mut input).expect("Failed to read line");
             println!("Importing {input}...");
 
             match input.to_lowercase().as_str().trim() {
-                "equipment" => println!("equipment csv"),
-                "coffee" => println!("coffee csv"),
-                "bag" => println!("bag csv"),
-                "brew" => println!("brew csv"),
-                _ => panic!("wtf are you doing???")
-            }
+                "equipment" => {
+                    for line in rdr.deserialize() {
+                        let equipment: equipment::Equipment = line?;
+                        dbg!(equipment);
+                    }
+                },
+                "coffee" => {    
+                    for line in rdr.deserialize() {
+                        let coffee: coffee::Coffee = line?;
+                        dbg!(coffee);
+                    }
+                },
+                "bag" => {    
+                    for line in rdr.deserialize() {
+                        let bag: bag::Bag = line?;
+                        dbg!(bag);
+                    }
+                },
+                "brew" => {    
+                    for line in rdr.deserialize() {
+                        let brew: brew::Brew = line?;
+                        dbg!(brew);
+                    }
+                },
 
-            // for result in rdr.deserialize() {
-            //     let record = result?;
-            //     println!("{:?}", record);
-            // }
+                _ => panic!("hey man that's not cool")
+            }
         },
         _ => panic!("invalid type") /* panic! macro */ 
     }
