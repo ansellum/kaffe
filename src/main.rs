@@ -1,10 +1,12 @@
 use clap::{Args, Parser, Subcommand};
-use std::{error::Error};
+use rusqlite::Connection;
 use std::path::Path;
 use std::ffi::OsStr;
-use std::fs::File;
+use std::fs;
 use std::io;
 use serde::{Deserialize};
+use std::error::Error;
+//use serde_rusqlite::*;
 
 pub mod equipment;
 pub mod bag;
@@ -109,10 +111,16 @@ struct JSONItems {
 // IMPORT COMMANDS //
 /////////////////////
 
+fn initialize_sql_schema(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> {
+    let schema_str = fs::read_to_string(path)?;
+    println!("Using schema:\n {schema_str}");
+    conn.execute_batch(&schema_str)?;
+
+    Ok(())
+}
+
 fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<dyn Error> */ 
-    let file = File::open(path)?; /* Generic Box<dyn Error> */ 
-    let reader = io::BufReader::new(file);
-    
+    // Parse file type
     let extension = Path::new(path)
         .extension()
         .and_then(OsStr::to_str)
@@ -120,9 +128,18 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<d
     
     match extension {
         "json" => {
+            let file = fs::File::open(path)?; /* Generic Box<dyn Error> */ 
+            let reader = io::BufReader::new(file);
             let j: JSONItems = serde_json::from_reader(reader)?;
+
+            // Open SQLite database
+            let conn = Connection::open("./kaffe.db")?;
+            if let Err(e) = initialize_sql_schema(&conn, "./kaffe.sql") {
+                panic!("Schema reading error: {e}");
+            }
+
             for equipment in j.equipment {
-                dbg!(equipment);
+                //dbg!(equipment);
                 // TODO: Now that equipment is serialized, put into SQLite db!
             }
             for coffee in j.coffee {
@@ -136,12 +153,12 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<d
             }
         }
         "csv" => {
-            let mut rdr = csv::Reader::from_reader(reader);
+            // Read CSV
+            let mut rdr = csv::Reader::from_path(path)?;
 
             // Wizard
-            let mut input = String::new();
-
             // TODO: Replace with auto-check
+            let mut input = String::new();
             println!("What type of item are you importing?");
             io::stdin().read_line(&mut input).expect("Failed to read line");
             println!("Importing {input}...");
