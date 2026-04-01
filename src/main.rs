@@ -110,33 +110,24 @@ struct JSONItems {
 /////////////////////
 // IMPORT COMMANDS //
 /////////////////////
-
-fn initialize_sql_schema(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> {
-    let schema_str = fs::read_to_string(path)?;
-    println!("Using schema:\n {schema_str}");
-    conn.execute_batch(&schema_str)?;
-
-    Ok(())
-}
-
-fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> { /* Generic Box<dyn Error> */ 
+fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
     // Parse file type
     let extension = Path::new(path)
         .extension()
         .and_then(OsStr::to_str)
-        .expect("Invalid file type. Please use a JSON or CSV."); /* .expect() calls panic! macro */ 
+        .expect("Invalid file type. Please use a JSON or CSV.");                /* TODO: pattern matching */ 
     
     match extension {
         "json" => {
-            let file = fs::File::open(path)?; /* Generic Box<dyn Error> */ 
+            let file = fs::File::open(path)?;                                   /* TODO: pattern matching */ 
             let reader = io::BufReader::new(file);
             let j: JSONItems = serde_json::from_reader(reader)?;
 
             // Open SQLite database
-            let conn = Connection::open("./kaffe.db")?;
-            if let Err(e) = initialize_sql_schema(&conn, "./kaffe.sql") {
-                panic!("Schema reading error: {e}");
-            }
+            let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
+            let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
+            conn.execute_batch(&schema_str)
+                .expect("Schema reading error!");                               /* TODO: pattern matching */ 
 
             for equipment in j.equipment {
                 //dbg!(equipment);
