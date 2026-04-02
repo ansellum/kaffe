@@ -6,7 +6,6 @@ use std::fs;
 use std::io;
 use serde::{Deserialize};
 use std::error::Error;
-//use serde_rusqlite::*;
 
 pub mod equipment;
 pub mod bag;
@@ -125,13 +124,25 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
 
             // Open SQLite database
             let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
+            //let conn = Connection::open_in_memory()?;
             let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
             conn.execute_batch(&schema_str)
                 .expect("Schema reading error!");                               /* TODO: pattern matching */ 
 
-            for equipment in j.equipment {
-                //dbg!(equipment);
-                // TODO: Now that equipment is serialized, put into SQLite db!
+            for e in j.equipment {
+                //Handle required items
+
+                let decomission_date_str = match e.decommission_date {
+                    Some(date) => date.to_string(),
+                    None => String::new()
+                };
+
+                let str = format!(
+                    "INSERT INTO equipment (name, kind, purchase_date, decommission_date, price_ct, timestamp) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')", 
+                    {e.name}, {e.kind.to_string()}, {e.purchase_date.to_string()}, {decomission_date_str}, {e.price_ct}, {e.timestamp}.to_string()
+                );
+
+                conn.execute(&str, [])?;
             }
             for coffee in j.coffee {
                 dbg!(coffee);
@@ -141,6 +152,23 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             }
             for brew in j.brew {
                 dbg!(brew);
+            }
+
+            // Read Database
+            let mut sql_select = conn.prepare("SELECT id, name, price_ct, decommission_date FROM equipment")?;
+
+            let rows = sql_select.query_map([], |row| {
+                Ok((
+                    row.get::<_, u32>(0)?,
+                    row.get::<_, String>(1)?,
+                    row.get::<_, u16>(2)?,
+                    row.get::<_, String>(3)?
+                ))
+            })?;
+
+            for row in rows {
+                let (id, name, price_ct, timestamp) = row?;
+                println!("ID: {}, Name: {}, Price: {}, Timestamp: {}", id, name, price_ct, timestamp);
             }
         }
         "csv" => {
