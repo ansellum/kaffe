@@ -133,8 +133,8 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             for e in j.equipment {
                 conn.execute(&e.to_sql(), [])?;
             }
-            for coffee in j.coffee {
-                dbg!(coffee);
+            for c in j.coffee {
+                conn.execute(&c.to_sql(), [])?;
             }
             for bag in j.bag {
                 dbg!(bag);
@@ -170,7 +170,7 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
                 "coffee" => {    
                     for line in rdr.deserialize() {
                         let c: coffee::Coffee = line?;
-                        dbg!(c);
+                        conn.execute(&c.to_sql(), [])?;
                     }
                 },
                 "bag" => {    
