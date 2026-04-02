@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS bag (
     roast_date DATETIME NOT NULL,
     open_date DATETIME,
     empty_date DATETIME,
-    purchase_date DATETIME NOT NULL,
     weight_g INTEGER NOT NULL,
     price_ct INTEGER NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP

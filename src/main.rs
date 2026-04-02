@@ -124,8 +124,8 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             let j: JSONItems = serde_json::from_reader(reader)?;
 
             // Open SQLite database
-            //let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
-            let conn = Connection::open_in_memory()?;
+            let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
+            //let conn = Connection::open_in_memory()?;
             let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
             conn.execute_batch(&schema_str)
                 .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -155,7 +155,8 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             println!("Importing {input}...");
 
             // Connect to SQLite database
-            let conn = Connection::open_in_memory()?;
+            //let conn = Connection::open_in_memory()?;
+            let conn = Connection::open("./kaffe.db")?;
             let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
             conn.execute_batch(&schema_str)
                 .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -175,8 +176,8 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
                 },
                 "bag" => {    
                     for line in rdr.deserialize() {
-                        let bag: bag::Bag = line?;
-                        dbg!(bag);
+                        let b: bag::Bag = line?;
+                        conn.execute(&b.to_sql(), [])?;
                     }
                 },
                 "brew" => {    
