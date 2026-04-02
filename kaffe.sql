@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS equipment (
     name TEXT NOT NULL,
     kind TEXT NOT NULL,
     purchase_date DATETIME NOT NULL,
-    decommission_date DATETIME,
+    decommission_date DATETIME DEFAULT NULL,
     price_ct INTEGER NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
