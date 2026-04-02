@@ -109,6 +109,7 @@ struct JSONItems {
 /////////////////////
 // IMPORT COMMANDS //
 /////////////////////
+
 fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
     // Parse file type
     let extension = Path::new(path)
@@ -123,26 +124,14 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             let j: JSONItems = serde_json::from_reader(reader)?;
 
             // Open SQLite database
-            let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
-            //let conn = Connection::open_in_memory()?;
+            //let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
+            let conn = Connection::open_in_memory()?;
             let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
             conn.execute_batch(&schema_str)
                 .expect("Schema reading error!");                               /* TODO: pattern matching */ 
 
             for e in j.equipment {
-                //Handle required items
-
-                let decomission_date_str = match e.decommission_date {
-                    Some(date) => date.to_string(),
-                    None => String::new()
-                };
-
-                let str = format!(
-                    "INSERT INTO equipment (name, kind, purchase_date, decommission_date, price_ct, timestamp) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')", 
-                    {e.name}, {e.kind.to_string()}, {e.purchase_date.to_string()}, {decomission_date_str}, {e.price_ct}, {e.timestamp}.to_string()
-                );
-
-                conn.execute(&str, [])?;
+                conn.execute(&e.to_sql(), [])?;
             }
             for coffee in j.coffee {
                 dbg!(coffee);
@@ -152,23 +141,6 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             }
             for brew in j.brew {
                 dbg!(brew);
-            }
-
-            // Read Database
-            let mut sql_select = conn.prepare("SELECT id, name, price_ct, decommission_date FROM equipment")?;
-
-            let rows = sql_select.query_map([], |row| {
-                Ok((
-                    row.get::<_, u32>(0)?,
-                    row.get::<_, String>(1)?,
-                    row.get::<_, u16>(2)?,
-                    row.get::<_, String>(3)?
-                ))
-            })?;
-
-            for row in rows {
-                let (id, name, price_ct, timestamp) = row?;
-                println!("ID: {}, Name: {}, Price: {}, Timestamp: {}", id, name, price_ct, timestamp);
             }
         }
         "csv" => {
@@ -182,17 +154,23 @@ fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
             io::stdin().read_line(&mut input).expect("Failed to read line");
             println!("Importing {input}...");
 
+            // Connect to SQLite database
+            let conn = Connection::open_in_memory()?;
+            let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
+            conn.execute_batch(&schema_str)
+                .expect("Schema reading error!");                               /* TODO: pattern matching */ 
+
             match input.to_lowercase().as_str().trim() {
                 "equipment" => {
                     for line in rdr.deserialize() {
-                        let equipment: equipment::Equipment = line?;
-                        dbg!(equipment);
+                        let e: equipment::Equipment = line?;
+                        conn.execute(&e.to_sql(), [])?;
                     }
                 },
                 "coffee" => {    
                     for line in rdr.deserialize() {
-                        let coffee: coffee::Coffee = line?;
-                        dbg!(coffee);
+                        let c: coffee::Coffee = line?;
+                        dbg!(c);
                     }
                 },
                 "bag" => {    
