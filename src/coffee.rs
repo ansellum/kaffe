@@ -48,6 +48,7 @@ pub struct Coffee {
     altitude_lower_m: Option<u16>,
     altitude_upper_m: Option<u16>,
     process: Option<String>,
+    #[serde(skip)]
     decaf: bool,
 
     varietals: Option<String>,
@@ -55,7 +56,7 @@ pub struct Coffee {
     tasting_notes: String,
 
     #[serde(default = "Timestamp::now")]
-    timestamp: Timestamp, // Timestamp = time inputted into database
+    timestamp: Timestamp,
 }
 
 impl Coffee {
@@ -84,17 +85,13 @@ impl Coffee {
 }
 
 pub fn new(mut c: Coffee) -> Result<Coffee, Box<dyn Error>> {
-    //c.varietals = format!("{}{}", e.purchase_date_str, "T00:00:00Z").parse()?;
-
     if let Some(str) = c.varietals.as_mut() {
         *str = json_array_from_delimited(str.to_string());
     }
     if let Some(str) = c.region.as_mut() {
         *str = json_array_from_delimited(str.to_string());
     }
-    
     c.tasting_notes = json_array_from_delimited(c.tasting_notes);
-
     Ok(c)
 }
 

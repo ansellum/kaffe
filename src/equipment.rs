@@ -23,14 +23,14 @@ pub struct Equipment {
 
     name: String,
     kind: EquipmentKind,
-    #[serde(default)]
-    decommission_date: Option<Timestamp>,
     price_ct: u32,
     #[serde(default = "Timestamp::now")]
     timestamp: Timestamp,
 
     #[serde(skip_deserializing)]
     purchase_date: Timestamp,
+    #[serde(default)]
+    decommission_date: Option<Timestamp>,
 
     #[serde(rename="purchase_date")]
     purchase_date_str: String,
@@ -44,7 +44,7 @@ impl Equipment {
             self.name,
             self.kind.to_string(),
             self.purchase_date.to_string(),
-            self.decommission_date.map(|v| v.to_string()).unwrap_or("default".to_string()),
+            self.decommission_date.map(|v| v.to_string()).unwrap_or("".to_string()),
             self.price_ct,
             self.timestamp.to_string()
         )
