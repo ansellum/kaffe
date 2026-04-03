@@ -1,6 +1,7 @@
 use jiff::Timestamp;
 use serde::Deserialize;
 use std::fmt;
+use std::error::Error;
 
 #[derive(Debug, Deserialize)]
 enum CoffeeKind {
@@ -49,20 +50,19 @@ pub struct Coffee {
     process: Option<String>,
     decaf: bool,
 
-    // To be parsed into Vec<String>
-    varietals: Option<String>, // Not Vec<> for deserialization
-    region: Option<String>, // Not Vec<> for deserialization
-    tasting_notes: String, // Not Vec<> for deserialization
+    varietals: Option<String>,
+    region: Option<String>,
+    tasting_notes: String,
 
     #[serde(default = "Timestamp::now")]
     timestamp: Timestamp, // Timestamp = time inputted into database
 }
 
 impl Coffee {
-    pub fn to_sql(&self) -> String {format!(
-            "INSERT INTO coffee (id, roaster, name, roast_level, kind, country, farm, producer, altitude_m, altitude_lower_m, altitude_upper_m, process, decaf, varietals, region, tasting_notes, timestamp) 
-                VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')", 
-            self.id,
+    pub fn to_sql(&self) -> String {
+        format!(
+            "INSERT INTO coffee (roaster, name, roast_level, kind, country, farm, producer, altitude_m, altitude_lower_m, altitude_upper_m, process, decaf, varietals, region, tasting_notes, timestamp) 
+                VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')",
             self.roaster,
             self.name,
             self.roast_level.to_string().to_lowercase(),
@@ -81,4 +81,23 @@ impl Coffee {
             self.timestamp.to_string()
         )
     }
+}
+
+pub fn new(mut c: Coffee) -> Result<Coffee, Box<dyn Error>> {
+    //c.varietals = format!("{}{}", e.purchase_date_str, "T00:00:00Z").parse()?;
+
+    if let Some(str) = c.varietals.as_mut() {
+        *str = json_array_from_delimited(str.to_string());
+    }
+    if let Some(str) = c.region.as_mut() {
+        *str = json_array_from_delimited(str.to_string());
+    }
+    
+    c.tasting_notes = json_array_from_delimited(c.tasting_notes);
+
+    Ok(c)
+}
+
+fn json_array_from_delimited(str: String) -> String {
+    format!("{:?}", str.split(';').collect::<Vec<_>>())
 }

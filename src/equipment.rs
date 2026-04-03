@@ -1,6 +1,7 @@
 use jiff::Timestamp;
 use serde::Deserialize;
 use std::fmt;
+use std::error::Error;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -22,12 +23,17 @@ pub struct Equipment {
 
     name: String,
     kind: EquipmentKind,
-    purchase_date: Timestamp,
     #[serde(default)]
     decommission_date: Option<Timestamp>,
     price_ct: u32,
     #[serde(default = "Timestamp::now")]
     timestamp: Timestamp,
+
+    #[serde(skip_deserializing)]
+    purchase_date: Timestamp,
+
+    #[serde(rename="purchase_date")]
+    purchase_date_str: String,
 }
 
 impl Equipment {
@@ -43,4 +49,9 @@ impl Equipment {
             self.timestamp.to_string()
         )
     }
+}
+
+pub fn new(mut e: Equipment) -> Result<Equipment, Box<dyn Error>> {
+    e.purchase_date = format!("{}{}", e.purchase_date_str, "T00:00:00Z").parse()?;
+    Ok(e)
 }

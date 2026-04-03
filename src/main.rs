@@ -94,103 +94,57 @@ enum BrewCommands {
     List,
 }
 
-////////////////////
-// IMPORT STRUCTS //
-////////////////////
-
-#[derive(Deserialize)]
-struct JSONItems {
-    equipment: Vec<equipment::Equipment>,
-    coffee: Vec<coffee::Coffee>,
-    bag: Vec<bag::Bag>,
-    brew: Vec<brew::Brew>,
-}
-
 /////////////////////
 // IMPORT COMMANDS //
 /////////////////////
 
-fn import_from_file(path: &str) -> Result<(), Box<dyn Error>> {
+fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     // Parse file type
-    let extension = Path::new(path)
-        .extension()
-        .and_then(OsStr::to_str)
-        .expect("Invalid file type. Please use a JSON or CSV.");                /* TODO: pattern matching */ 
-    
-    match extension {
-        "json" => {
-            let file = fs::File::open(path)?;                                   /* TODO: pattern matching */ 
-            let reader = io::BufReader::new(file);
-            let j: JSONItems = serde_json::from_reader(reader)?;
+    // Read CSV
+    let mut rdr = csv::Reader::from_path(path)?;
 
-            // Open SQLite database
-            let conn = Connection::open("./kaffe.db")?;                         /* TODO: pattern matching */ 
-            //let conn = Connection::open_in_memory()?;
-            let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
-            conn.execute_batch(&schema_str)
-                .expect("Schema reading error!");                               /* TODO: pattern matching */ 
+    // Connect to SQLite database
+    let conn = Connection::open_in_memory()?;
+    //let conn = Connection::open("./kaffe.db")?;
+    let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
+    conn.execute_batch(&schema_str)
+        .expect("Schema reading error!");                               /* TODO: pattern matching */ 
 
-            for e in j.equipment {
+    // Wizard
+    // TODO: Replace with auto-check
+    let mut input = String::new();
+    println!("What type of item are you importing?");
+    io::stdin().read_line(&mut input).expect("Failed to read line");
+    println!("Importing {input}...");
+
+    match input.to_lowercase().as_str().trim() {
+        "equipment" => {
+            for line in rdr.deserialize() {
+                //let e: equipment::Equipment = line?;
+                let e = equipment::new(line.unwrap())?;
                 conn.execute(&e.to_sql(), [])?;
             }
-            for c in j.coffee {
+        },
+        "coffee" => {    
+            for line in rdr.deserialize() {
+                let c = coffee::new(line.unwrap())?;
                 conn.execute(&c.to_sql(), [])?;
             }
-            for bag in j.bag {
-                dbg!(bag);
-            }
-            for brew in j.brew {
-                dbg!(brew);
-            }
-        }
-        "csv" => {
-            // Read CSV
-            let mut rdr = csv::Reader::from_path(path)?;
-
-            // Wizard
-            // TODO: Replace with auto-check
-            let mut input = String::new();
-            println!("What type of item are you importing?");
-            io::stdin().read_line(&mut input).expect("Failed to read line");
-            println!("Importing {input}...");
-
-            // Connect to SQLite database
-            //let conn = Connection::open_in_memory()?;
-            let conn = Connection::open("./kaffe.db")?;
-            let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
-            conn.execute_batch(&schema_str)
-                .expect("Schema reading error!");                               /* TODO: pattern matching */ 
-
-            match input.to_lowercase().as_str().trim() {
-                "equipment" => {
-                    for line in rdr.deserialize() {
-                        let e: equipment::Equipment = line?;
-                        conn.execute(&e.to_sql(), [])?;
-                    }
-                },
-                "coffee" => {    
-                    for line in rdr.deserialize() {
-                        let c: coffee::Coffee = line?;
-                        conn.execute(&c.to_sql(), [])?;
-                    }
-                },
-                "bag" => {    
-                    for line in rdr.deserialize() {
-                        let b: bag::Bag = line?;
-                        conn.execute(&b.to_sql(), [])?;
-                    }
-                },
-                "brew" => {    
-                    for line in rdr.deserialize() {
-                        let brew: brew::Brew = line?;
-                        dbg!(brew);
-                    }
-                },
-
-                _ => panic!("hey man that's not cool")
+        },
+        "bag" => {    
+            for line in rdr.deserialize() {
+                let b = bag::new(line.unwrap())?;
+                conn.execute(&b.to_sql(), [])?;
             }
         },
-        _ => panic!("invalid type") /* panic! macro */ 
+        "brew" => {    
+            for line in rdr.deserialize() {
+                let brew: brew::Brew = line?;
+                dbg!(brew);
+            }
+        },
+
+        _ => panic!("hey man that's not cool")
     }
 
     Ok(())
@@ -232,7 +186,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // MAIN
-        Modes::Import { file } => import_from_file(&file)?
+        Modes::Import { file } => import_from_csv(&file)?
     }
 
     Ok(())
