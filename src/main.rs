@@ -1,10 +1,7 @@
 use clap::{Args, Parser, Subcommand};
 use rusqlite::Connection;
-use std::path::Path;
-use std::ffi::OsStr;
 use std::fs;
 use std::io;
-use serde::{Deserialize};
 use std::error::Error;
 
 pub mod equipment;
@@ -104,8 +101,8 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     let mut rdr = csv::Reader::from_path(path)?;
 
     // Connect to SQLite database
-    let conn = Connection::open_in_memory()?;
-    //let conn = Connection::open("./kaffe.db")?;
+    //let conn = Connection::open_in_memory()?;
+    let conn = Connection::open("./kaffe.db")?;
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -133,7 +130,7 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
         },
         "bag" => {    
             for line in rdr.deserialize() {
-                let b = bag::new(line.unwrap())?;
+                let b = bag::new(&conn, line.unwrap())?;
                 conn.execute(&b.to_sql(), [])?;
             }
         },

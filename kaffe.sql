@@ -45,10 +45,11 @@ CREATE TABLE IF NOT EXISTS brew (
     grinder_id INTEGER REFERENCES equipment(id), --foreign key
     brewer_id INTEGER REFERENCES equipment(id), --foreign key
     grind_level INTEGER NOT NULL,
-    coffee_g INTEGER NOT NULL,
-    water_g INTEGER,
-    brew_g INTEGER NOT NULL,
-    temp_c INTEGER NOT NULL,
+    coffee_g REAL NOT NULL,
+    water_g REAL,
+    brew_g REAL,
+    temp_c REAL,
+    time_s INTEGER,
     rating INTEGER NOT NULL,
     notes TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
