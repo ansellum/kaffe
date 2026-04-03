@@ -1,8 +1,8 @@
 use jiff::Timestamp;
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 use std::fmt;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum EquipmentKind {
     Brewer,
@@ -15,7 +15,7 @@ impl fmt::Display for EquipmentKind {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Equipment {
     #[serde(default)]
     id: u32, // TODO: Assigned by SQLite
