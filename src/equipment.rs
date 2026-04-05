@@ -1,10 +1,10 @@
 use jiff::Timestamp;
-use serde::Deserialize;
+use jiff::civil::Time;
 use std::fmt;
 use std::error::Error;
+use std::str::FromStr;
 
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug)]
 pub enum EquipmentKind {
     Brewer,
     Grinder,
@@ -16,24 +16,27 @@ impl fmt::Display for EquipmentKind {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Equipment {
-    #[serde(default)]
-    id: u32, // TODO: Assigned by SQLite
+impl std::str::FromStr for EquipmentKind {
+    type Err = ();
 
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "grinder" => Ok(EquipmentKind::Grinder),
+            "brewer" => Ok(EquipmentKind::Brewer),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct Equipment {
+    id: u32, // TODO: Assigned by SQLite
     name: String,
     kind: EquipmentKind,
     price_ct: u32,
-    #[serde(default = "Timestamp::now")]
-    timestamp: Timestamp,
-
-    #[serde(skip_deserializing)]
     purchase_date: Timestamp,
-    #[serde(default)]
     decommission_date: Option<Timestamp>,
-
-    #[serde(rename="purchase_date")]
-    purchase_date_str: String,
+    timestamp: Timestamp,
 }
 
 impl Equipment {
@@ -51,7 +54,16 @@ impl Equipment {
     }
 }
 
-pub fn new(mut e: Equipment) -> Result<Equipment, Box<dyn Error>> {
-    e.purchase_date = format!("{}{}", e.purchase_date_str, "T00:00:00Z").parse()?;
+pub fn new(record: csv::StringRecord) -> Result<Equipment, Box<dyn Error>> {
+    let e = Equipment {
+        id: 0,
+        name: record[0].trim().to_string(),
+        kind: EquipmentKind::from_str(&record[1]).expect("EquipmentType parsing error"),
+        purchase_date: format!("{}T00:00:00Z", &record[2]).parse()?,
+        decommission_date: (!record[3].is_empty()).then(|| format!("{}T00:00:00Z", &record[3]).parse()).transpose()?,
+        price_ct: record[4].parse()?,
+        timestamp: Timestamp::now()
+    };
+
     Ok(e)
 }

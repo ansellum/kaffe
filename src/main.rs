@@ -96,10 +96,6 @@ enum BrewCommands {
 /////////////////////
 
 fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
-    // Parse file type
-    // Read CSV
-    let mut rdr = csv::Reader::from_path(path)?;
-
     // Connect to SQLite database
     //let conn = Connection::open_in_memory()?;
     let conn = Connection::open("./kaffe.db")?;
@@ -107,18 +103,21 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
 
-    // Wizard
     // TODO: Replace with auto-check
     let mut input = String::new();
     println!("What type of item are you importing?");
     io::stdin().read_line(&mut input).expect("Failed to read line");
     println!("Importing {input}...");
 
+    // Read CSV
+    let mut rdr = csv::Reader::from_path(path)?;
+
     match input.to_lowercase().as_str().trim() {
         "equipment" => {
-            for line in rdr.deserialize() {
+            for record in rdr.records() {
                 //let e: equipment::Equipment = line?;
-                let e = equipment::new(line.unwrap())?;
+                let record = record?;
+                let e = equipment::new(record)?;
                 conn.execute(&e.to_sql(), [])?;
             }
         },
