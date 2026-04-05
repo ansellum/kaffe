@@ -1,13 +1,10 @@
 use jiff::Timestamp;
-use serde::Deserialize;
 use std::fmt;
 use std::error::Error;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug)]
 enum CoffeeKind {
-    #[serde(rename = "single-origin")]
     SingleOrigin,
-    #[serde(rename = "blend")]
     Blend
 }
 
@@ -17,8 +14,19 @@ impl fmt::Display for CoffeeKind {
     }
 }
 
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "lowercase")]
+impl std::str::FromStr for CoffeeKind {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "single-origin" => Ok(EquipmentKind::Grinder),
+            "brewer" => Ok(EquipmentKind::Brewer),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Debug)]
 enum RoastLevel {
     Light,
     Medium,
@@ -32,9 +40,8 @@ impl fmt::Display for RoastLevel {
 }
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug)]
 pub struct Coffee {
-    #[serde(default)]
     id: u32,
 
     roaster: String,
@@ -48,14 +55,12 @@ pub struct Coffee {
     altitude_lower_m: Option<u16>,
     altitude_upper_m: Option<u16>,
     process: Option<String>,
-    #[serde(skip)]
     decaf: bool,
 
     varietals: Option<String>,
     region: Option<String>,
     tasting_notes: String,
 
-    #[serde(default = "Timestamp::now")]
     timestamp: Timestamp,
 }
 
@@ -84,17 +89,43 @@ impl Coffee {
     }
 }
 
-pub fn new(mut c: Coffee) -> Result<Coffee, Box<dyn Error>> {
-    if let Some(str) = c.varietals.as_mut() {
-        *str = json_array_from_delimited(str.to_string());
-    }
-    if let Some(str) = c.region.as_mut() {
-        *str = json_array_from_delimited(str.to_string());
-    }
-    c.tasting_notes = json_array_from_delimited(c.tasting_notes);
-    Ok(c)
+pub fn new(record: csv::StringRecord) -> Result<Coffee, Box<dyn Error>> {
+    let c = Coffee {
+        id: 0,
+        roaster: record[0].to_string(),
+        name: record[1].to_string(),
+        roast_level: RoastLevel,
+        kind: CoffeeKind,
+        country: Option<String>,
+        farm: Option<String>,
+        producer: Option<String>,
+        altitude_m: Option<u16>,
+        altitude_lower_m: Option<u16>,
+        altitude_upper_m: Option<u16>,
+        process: Option<String>,
+        decaf: bool,
+
+        varietals: Option<String>,
+        region: Option<String>,
+        tasting_notes: String,
+
+        timestamp: Timestamp,
+    };
+
+    Ok(e)
 }
 
-fn json_array_from_delimited(str: String) -> String {
-    format!("{:?}", str.split(';').collect::<Vec<_>>())
-}
+// pub fn new(mut c: Coffee) -> Result<Coffee, Box<dyn Error>> {
+//     if let Some(str) = c.varietals.as_mut() {
+//         *str = json_array_from_delimited(str.to_string());
+//     }
+//     if let Some(str) = c.region.as_mut() {
+//         *str = json_array_from_delimited(str.to_string());
+//     }
+//     c.tasting_notes = json_array_from_delimited(c.tasting_notes);
+//     Ok(c)
+// }
+
+// fn json_array_from_delimited(str: String) -> String {
+//     format!("{:?}", str.split(';').collect::<Vec<_>>())
+// }
