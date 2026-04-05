@@ -1,7 +1,7 @@
-name,kind,purchase_date,price_ct
-Niche Zero,grinder,2024-01-01,50000
-KinGrinder K6,grinder,2024-01-01,12000
-Timemore C2,grinder,2021-01-01,8000
-Rancilio Silvia,brewer,2024-01-01,30000
-V60,brewer,2022-01-01,700
-Aeropress,brewer,2023-01-01,4000
+name,kind,purchase_date,decomission_date,price_ct
+Niche Zero,grinder,2024-01-01,,50000
+KinGrinder K6,grinder,2024-01-01,,12000
+Timemore C2,grinder,2021-01-01,,8000
+Rancilio Silvia,brewer,2024-01-01,,30000
+V60,brewer,2022-01-01,,700
+Aeropress,brewer,2023-01-01,,4000
