@@ -97,8 +97,8 @@ enum BrewCommands {
 
 fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     // Connect to SQLite database
-    //let conn = Connection::open_in_memory()?;
-    let conn = Connection::open("./kaffe.db")?;
+    let conn = Connection::open_in_memory()?;
+    //let conn = Connection::open("./kaffe.db")?;
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -122,8 +122,9 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
             }
         },
         "coffee" => {    
-            for line in rdr.deserialize() {
-                let c = coffee::new(line.unwrap())?;
+            for record in rdr.records() {
+                let record = record?;
+                let c = coffee::new(record)?;
                 conn.execute(&c.to_sql(), [])?;
             }
         },
@@ -142,6 +143,15 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
 
         _ => panic!("hey man that's not cool")
     }
+
+    // Debug
+    // let mut stmt = conn.prepare("SELECT name FROM equipment")?;
+    // let mut rows = stmt.query([])?;
+
+    // while let Some(row) = rows.next()? {
+    //     let name: String = row.get(0)?;
+    //     println!("Name: {}", name);
+    // }
 
     Ok(())
 }
