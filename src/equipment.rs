@@ -1,7 +1,6 @@
 use jiff::Timestamp;
 use std::fmt;
 use std::error::Error;
-use std::str::FromStr;
 
 #[derive(Debug)]
 pub enum EquipmentKind {
@@ -20,8 +19,8 @@ impl std::str::FromStr for EquipmentKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "grinder" => Ok(EquipmentKind::Grinder),
-            "brewer" => Ok(EquipmentKind::Brewer),
+            "grinder" => Ok(Self::Grinder),
+            "brewer" => Ok(Self::Brewer),
             _ => Err(()),
         }
     }
@@ -46,7 +45,7 @@ impl Equipment {
             self.name,
             self.kind.to_string(),
             self.purchase_date.to_string(),
-            self.decommission_date.map(|v| v.to_string()).unwrap_or("".to_string()),
+            self.decommission_date.map(|v| v.to_string()).unwrap_or_default(),
             self.price_ct,
             self.timestamp.to_string()
         )
@@ -56,13 +55,21 @@ impl Equipment {
 pub fn new(record: csv::StringRecord) -> Result<Equipment, Box<dyn Error>> {
     let e = Equipment {
         id: 0,
-        name: record[0].trim().to_string(),
-        kind: EquipmentKind::from_str(&record[1]).expect("EquipmentType parsing error"),
+        name: record[0].to_string(),
+        kind: record[1].parse().expect("EquipmentKind parsing error!"),
         purchase_date: format!("{}T00:00:00Z", &record[2]).parse()?,
-        decommission_date: (!record[3].is_empty()).then(|| format!("{}T00:00:00Z", &record[3]).parse()).transpose()?,
+        decommission_date: field_to_optional_timestamp(&record[3])?,
         price_ct: record[4].parse()?,
         timestamp: Timestamp::now()
     };
 
     Ok(e)
+}
+
+fn field_to_optional_timestamp(day: &str) -> Result<Option<Timestamp>, jiff::Error> {
+    //format!("{}T00:00:00Z", opt.unwrap()).parse::<Timestamp>().map(Some)
+    match day {
+        "" => Ok(None),
+        _ => format!("{}T00:00:00Z", day).parse::<Timestamp>().map(Some)
+    }
 }

@@ -116,14 +116,16 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
         "equipment" => {
             for record in rdr.records() {
                 //let e: equipment::Equipment = line?;
-                let record = record?;
+                let mut record = record?;
+                record.trim();
                 let e = equipment::new(record)?;
                 conn.execute(&e.to_sql(), [])?;
             }
         },
         "coffee" => {    
             for record in rdr.records() {
-                let record = record?;
+                let mut record = record?;
+                record.trim();
                 let c = coffee::new(record)?;
                 conn.execute(&c.to_sql(), [])?;
             }
