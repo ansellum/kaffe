@@ -57,7 +57,9 @@ pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equi
         name: record[h["name"]].to_string(),
         kind: record[h["kind"]].parse().expect("EquipmentKind parsing error!"),
         purchase_date: format!("{}T00:00:00Z", &record[h["purchase_date"]]).parse()?,
-        decommission_date: field_to_optional_timestamp(&record[h["decomission_date"]])?,
+        decommission_date: none_if_empty(&record[h["decomission_date"]])
+            .map(|day| format!("{}T00:00:00Z", day).parse::<Timestamp>())
+            .transpose()?,
         price_ct: record[h["price_ct"]].parse()?,
         timestamp: Timestamp::now()
     };
@@ -65,9 +67,6 @@ pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equi
     Ok(e)
 }
 
-fn field_to_optional_timestamp(day: &str) -> Result<Option<Timestamp>, jiff::Error> {
-    match day {
-        "" => Ok(None),
-        _ => format!("{}T00:00:00Z", day).parse::<Timestamp>().map(Some)
-    }
+fn none_if_empty(field: &str) -> Option<String> {
+    if field.is_empty() { None } else { Some(field.to_string()) }
 }
