@@ -1,7 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use rusqlite::Connection;
 use std::fs;
-use std::io;
 use std::error::Error;
 use std::collections::HashMap;
 
@@ -98,8 +97,8 @@ enum BrewCommands {
 
 fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     // Connect to SQLite database
-    let conn = Connection::open_in_memory()?;
-    //let conn = Connection::open("./kaffe.db")?;
+    //let conn = Connection::open_in_memory()?;
+    let conn = Connection::open("./kaffe.db")?;
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -113,7 +112,7 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
         .collect();
 
     match headers.len() {
-        5 => {
+        5 => { // EQUIPMENT
             for record in rdr.records() {
                 let mut record = record?;
                 record.trim();
@@ -121,7 +120,7 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
                 conn.execute(&e.to_sql(), [])?;
             }
         },
-        15 => {
+        15 => { // COFFEE
             for record in rdr.records() {
                 let mut record = record?;
                 record.trim();
@@ -129,13 +128,15 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
                 conn.execute(&c.to_sql(), [])?;
             }
         },
-        7 => {
-            for line in rdr.deserialize() {
-                let b = bag::new(&conn, line.unwrap())?;
+        6 => { // BAGS
+            for record in rdr.records() {
+                let mut record = record?;
+                record.trim();
+                let b = bag::new(record, &header_map, &conn)?;
                 conn.execute(&b.to_sql(), [])?;
             }
         },
-        10 => {
+        11 => { // BREWS
             for line in rdr.deserialize() {
                 let brew: brew::Brew = line?;
                 dbg!(brew);
@@ -143,15 +144,6 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
         },
 
         _ => panic!("hey man that's not cool")
-    }
-
-    // Debug
-    let mut stmt = conn.prepare("SELECT name FROM coffee")?;
-    let mut rows = stmt.query([])?;
-
-    while let Some(row) = rows.next()? {
-        let name: String = row.get(0)?;
-        println!("Name: {}", name);
     }
 
     Ok(())
