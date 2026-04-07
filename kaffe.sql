@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS coffee (
     process TEXT NOT NULL,
     tasting_notes TEXT NOT NULL,
     decaf INTEGER NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(roaster, name, roast_level)
 );
 
 CREATE TABLE IF NOT EXISTS bag (
