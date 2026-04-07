@@ -1,6 +1,7 @@
 use jiff::Timestamp;
 use std::fmt;
 use std::error::Error;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 enum CoffeeKind {
@@ -23,7 +24,7 @@ impl std::str::FromStr for CoffeeKind {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "single-origin" => Ok(Self::SingleOrigin),
-            "brewer" => Ok(Self::Blend),
+            "blend" => Ok(Self::Blend),
             _ => Err(()),
         }
     }
@@ -87,76 +88,53 @@ impl Coffee {
     pub fn to_sql(&self) -> String {
         format!(
             "INSERT INTO coffee (roaster, name, roast_level, kind, country, farm, producer, altitude_m, altitude_lower_m, altitude_upper_m, process, decaf, varietals, region, tasting_notes, timestamp) 
-                VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')",
+                VALUES ('{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}')",
             self.roaster,
             self.name,
-            self.roast_level.to_string(),
-            self.kind.to_string(),
-            self.country.unwrap_or_default(),
-            self.farm.unwrap_or_default(),
+            self.roast_level,
+            self.kind,
+            self.country.as_deref().unwrap_or_default(),
+            self.farm.as_deref().unwrap_or_default(),
             self.producer.as_deref().unwrap_or_default(),
-            self.altitude_m.map(|v| v.to_string()).unwrap_or("".to_string()),
-            self.altitude_lower_m.unwrap_or_default(),
-            self.altitude_upper_m.unwrap_or_default(),
+            self.altitude_m.map_or(String::new(), |num| num.to_string()),
+            self.altitude_lower_m.map_or(String::new(), |num| num.to_string()),
+            self.altitude_upper_m.map_or(String::new(), |num| num.to_string()),
             self.process.as_deref().unwrap_or_default(),
             self.decaf,
-            format!("{:?}", self.varietals.as_deref().unwrap_or_default().split(';').collect::<Vec<_>>()),
-            format!("{:?}", self.region.as_deref().unwrap_or_default().split(';').collect::<Vec<_>>()),
-            format!("{:?}", self.tasting_notes.split(';').collect::<Vec<_>>()),
+            self.varietals,
+            self.region,
+            self.tasting_notes,
             self.timestamp.to_string()
         )
     }
 }
 
-pub fn new(record: csv::StringRecord) -> Result<Coffee, Box<dyn Error>> {
+pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
     let c = Coffee {
         id: 0,
-        roaster: record[0].to_string(),
-        name: record[1].to_string(),
-        kind: record[2].parse().expect("CoffeeKind parse error!"),
-        country: none_if_empty(record[3].to_string()),
-        region: none_if_empty(record[4].to_string()).map(|s|
+        roaster: record[h["roaster"]].to_string(),
+        name: record[h["name"]].to_string(),
+        kind: record[h["kind"]].parse::<CoffeeKind>().expect("CoffeeKind parse error!"),
+        country: none_if_empty(&record[h["country"]]),
+        region: none_if_empty(&record[h["region"]]).map(|s|
             s.split(';').map(str::to_owned).collect()),
-        farm: none_if_empty(record[5].to_string()),
-        producer: none_if_empty(record[6].to_string()),
-        varietals: none_if_empty(record[7].to_string()).map(|s|
+        farm: none_if_empty(&record[h["farm"]]),
+        producer: none_if_empty(&record[h["producer"]]),
+        varietals: none_if_empty(&record[h["varietals"]]).map(|s|
             s.split(';').map(str::to_owned).collect()),
-        altitude_m: none_if_empty(record[8].to_string()).map(|s| s.parse::<u16>().expect("altitude_m Parse Error")),
-        altitude_lower_m: none_if_empty(record[9].to_string()).map(|s| s.parse::<u16>().expect("altitude_lower_m Parse Error")),
-        altitude_upper_m: none_if_empty(record[10].to_string()).map(|s| s.parse::<u16>().expect("altitude_upper_m Parse Error")),
-        process: none_if_empty(record[3].to_string()),
-        roast_level: record[11].parse().expect("RoastLevel parse error!"),
-        tasting_notes: record[12].split(';').map(str::to_owned).collect(),
-        decaf: !record[13].is_empty(),
+        altitude_m: none_if_empty(&record[h["altitude_m"]]).map(|s| s.parse::<u16>().expect("altitude_m Parse Error")),
+        altitude_lower_m: none_if_empty(&record[h["altitude_lower_m"]]).map(|s| s.parse::<u16>().expect("altitude_lower_m Parse Error")),
+        altitude_upper_m: none_if_empty(&record[h["altitude_upper_m"]]).map(|s| s.parse::<u16>().expect("altitude_upper_m Parse Error")),
+        process: none_if_empty(&record[h["process"]]),
+        roast_level: record[h["roast_level"]].parse().expect("RoastLevel parse error!"),
+        tasting_notes: record[h["tasting_notes"]].split(';').map(str::to_owned).collect(),
+        decaf: !record[h["decaf"]].is_empty(),
         timestamp: Timestamp::now(),
     };
 
     Ok(c)
 }
 
-// pub fn new(mut c: Coffee) -> Result<Coffee, Box<dyn Error>> {
-//     if let Some(str) = c.varietals.as_mut() {
-//         *str = json_array_from_delimited(str.to_string());
-//     }
-//     if let Some(str) = c.region.as_mut() {
-//         *str = json_array_from_delimited(str.to_string());
-//     }
-//     c.tasting_notes = json_array_from_delimited(c.tasting_notes);
-//     Ok(c)
-// }
-
-fn json_array_from_delimited(str: String) -> String {
-    format!("{:?}", str.split(';').collect::<Vec<_>>())
-}
-
-fn empty_to_opt_str(field: &str) -> Option<String> {
-    (!field.is_empty()).then(|| field.to_string())
-}
-
-fn empty_to_opt_u16(field: &str) -> Option<u16> {
-    (!field.is_empty()).then(|| field.parse().expect("Not a valid number"))
-}
-
-fn none_if_empty(field: String) -> Option<String> {
-    if field.is_empty() { None } else { Some(field) }
+fn none_if_empty(field: &str) -> Option<String> {
+    if field.is_empty() { None } else { Some(field.to_string()) }
 }
