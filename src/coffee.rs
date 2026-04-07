@@ -62,8 +62,6 @@ impl std::str::FromStr for RoastLevel {
 
 #[derive(Debug)]
 pub struct Coffee {
-    id: u32,
-
     roaster: String,
     name: String,
     roast_level: RoastLevel,
@@ -88,7 +86,7 @@ impl Coffee {
     pub fn to_sql(&self) -> String {
         format!(
             "INSERT INTO coffee (roaster, name, roast_level, kind, country, farm, producer, altitude_m, altitude_lower_m, altitude_upper_m, process, decaf, varietals, region, tasting_notes, timestamp) 
-                VALUES ('{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}', '{:?}')",
+                VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')",
             self.roaster,
             self.name,
             self.roast_level,
@@ -101,9 +99,9 @@ impl Coffee {
             self.altitude_upper_m.map_or(String::new(), |num| num.to_string()),
             self.process.as_deref().unwrap_or_default(),
             self.decaf,
-            self.varietals,
-            self.region,
-            self.tasting_notes,
+            self.varietals.as_deref().map_or_else(|| String::new(), |s| format!("{:?}", s)),
+            self.region.as_deref().map_or_else(|| String::new(), |s| format!("{:?}", s)),
+            format!("{:?}", self.tasting_notes),
             self.timestamp.to_string()
         )
     }
@@ -111,7 +109,6 @@ impl Coffee {
 
 pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
     let c = Coffee {
-        id: 0,
         roaster: record[h["roaster"]].to_string(),
         name: record[h["name"]].to_string(),
         kind: record[h["kind"]].parse::<CoffeeKind>().expect("CoffeeKind parse error!"),
