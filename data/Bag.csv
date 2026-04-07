@@ -1,19 +1,19 @@
-id,coffee,roast_date,open_date,empty_date,weight_g,price
-1,Ethiopia Yirgacheffe,2025-10-30,2025-10-30,,283,$18.00
-2,Guatemala,2025-10-30,2025-10-30,,283,$15.00
-3,Perú,2025-10-30,2025-10-30,,283,$13.00
-4,Nicaragua,2025-10-30,2025-10-30,,283,$13.00
-5,Farmer’s,2025-09-04,2025-09-04,,283,$16.67
-6,Machu Picchu,2025-06-16,2025-06-16,,283,$16.67
-7,Ethiopia Yirgacheffe,2025-03-21,2025-03-21,,907,$25.00
-8,Ethiopia Yirgacheffe,2025-12-13,2025-12-13,,772,$50.00
-9,DR Congo Kivu Hutwe Honey,2025-12-13,2025-12-13,,300,$14.25
-10,Burundi Kayanza Ninga Bumba Anaerobic Honey,2025-12-13,2025-12-13,,300,$14.35
-11,Rwanda Dukorere Kawa Bukure Natural ,2025-12-13,2025-12-13,,300,$14.50
-12,Sumatra Bener Meriah CSC Abyssinia and Typica,2025-12-04,2025-12-04,,300,$14.65
-13,Espresso Blend,2025-09-18,2025-09-18,,283,$16.67
-14,Ethiopia Mullugeta Muntasha Sidama Arbegona Natural,2026-02-09,2026-02-25,,300,$16.50
-15,Ecuador Pichincha Galo Morales Natural Gesha,2025-12-27,,,100,$18.52
-16,Papua New Guinea Jiwaka Arufa Natural,2026-02-09,2026-03-29,,300,$15.80
-17,Sumatra Bener Meriah CSC Abyssinia and Typica – MEDIUM roast,2026-02-09,,,300,$14.80
-18,Ethiopia Sidama,2026-02-14,2026-02-14,,772,$18.00
+coffee,roast_date,open_date,empty_date,weight_g,price
+Ethiopia Yirgacheffe,2025-10-30,2025-10-30,,283,$18.00
+Guatemala,2025-10-30,2025-10-30,,283,$15.00
+Perú,2025-10-30,2025-10-30,,283,$13.00
+Nicaragua,2025-10-30,2025-10-30,,283,$13.00
+Farmer’s,2025-09-04,2025-09-04,,283,$16.67
+Machu Picchu,2025-06-16,2025-06-16,,283,$16.67
+Ethiopia Yirgacheffe,2025-03-21,2025-03-21,,907,$25.00
+Ethiopia Yirgacheffe,2025-12-13,2025-12-13,,772,$50.00
+DR Congo Kivu Hutwe Honey,2025-12-13,2025-12-13,,300,$14.25
+Burundi Kayanza Ninga Bumba Anaerobic Honey,2025-12-13,2025-12-13,,300,$14.35
+Rwanda Dukorere Kawa Bukure Natural ,2025-12-13,2025-12-13,,300,$14.50
+Sumatra Bener Meriah CSC Abyssinia and Typica,2025-12-04,2025-12-04,,300,$14.65
+Espresso Blend,2025-09-18,2025-09-18,,283,$16.67
+Ethiopia Mullugeta Muntasha Sidama Arbegona Natural,2026-02-09,2026-02-25,,300,$16.50
+Ecuador Pichincha Galo Morales Natural Gesha,2025-12-27,,,100,$18.52
+Papua New Guinea Jiwaka Arufa Natural,2026-02-09,2026-03-29,,300,$15.80
+Sumatra Bener Meriah CSC Abyssinia and Typica – MEDIUM roast,2026-02-09,,,300,$14.80
+Ethiopia Sidama,2026-02-14,2026-02-14,,772,$18.00
