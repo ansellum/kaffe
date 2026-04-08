@@ -21,12 +21,9 @@ struct Cli {
 enum Modes {
     Import {
         file: String,
-    }
+    },
+    Cli
 }
-
-/////////////////////
-// IMPORT COMMANDS //
-/////////////////////
 
 fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> {
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
@@ -70,6 +67,47 @@ fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> 
     Ok(())
 }
 
+fn wizard(_conn: &Connection) -> Result<(), Box<dyn Error>> {
+    let mut input = String::new();
+
+    println!("____________________________________________________________________________________________");
+    println!("\nHello! Welcome to kaffe!");
+    println!("This wizard will guide you through adding new items.\n");
+    println!("What are you planning to add today?\n  [1] Equipment\n  [2] Coffee\n  [3] Bag\n  [4] Brew\n");
+
+    std::io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+
+    let input = input.trim();
+    match input.parse()? {
+        1 => {
+            println!("____________________________________________________________________________________________");
+            println!("\nThanks! Importing equipment now..."); 
+        },
+        2 => {
+            println!("____________________________________________________________________________________________");
+            println!("\nThanks! Importing coffee now..."); 
+            
+        },
+        3 => {
+            println!("____________________________________________________________________________________________");
+            println!("\nThanks! Importing bag now..."); 
+
+        },
+        4 => {
+            println!("____________________________________________________________________________________________");
+            println!("\nThanks! Importing brew now..."); 
+            
+        },
+        _ => println!("Invalid!")
+    };
+
+    println!("You typed: {}", input);
+
+    Ok(())
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialization
     let args = Cli::parse();
@@ -79,8 +117,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let conn = Connection::open("./kaffe.db")?;
 
     match args.command {
-        // MAIN
         Modes::Import { file } => import_from_csv(&conn, &file)?,
+        Modes::Cli => wizard(&conn)?,
     }
 
     Ok(())
