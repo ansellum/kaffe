@@ -1,4 +1,4 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 use rusqlite::Connection;
 use std::fs;
 use std::error::Error;
@@ -22,69 +22,6 @@ enum Modes {
     Import {
         file: String,
     }
-}
-
-////////////////////
-// WIZARD STRUCTS //
-////////////////////
-#[derive(Args)]
-#[command(args_conflicts_with_subcommands = true)]
-#[command(flatten_help = true)]
-struct EquipmentArgs {
-    #[command(subcommand)]
-    command: EquipmentCommands,
-}
-
-#[derive(Subcommand)]
-enum EquipmentCommands {
-    Add,
-    Remove,
-    List,
-}
-
-#[derive(Args)]
-#[command(args_conflicts_with_subcommands = true)]
-#[command(flatten_help = true)]
-struct BagArgs {
-    #[command(subcommand)]
-    command: BagCommands,
-}
-
-#[derive(Subcommand)]
-enum BagCommands {
-    Add,
-    Remove,
-    List,
-}
-
-#[derive(Args)]
-#[command(args_conflicts_with_subcommands = true)]
-#[command(flatten_help = true)]
-struct CoffeeArgs {
-    #[command(subcommand)]
-    command: CoffeeCommands,
-}
-
-#[derive(Subcommand)]
-enum CoffeeCommands {
-    Add,
-    Remove,
-    List,
-}
-
-#[derive(Args)]
-#[command(args_conflicts_with_subcommands = true)]
-#[command(flatten_help = true)]
-struct BrewArgs {
-    #[command(subcommand)]
-    command: BrewCommands,
-}
-
-#[derive(Subcommand)]
-enum BrewCommands {
-    Add,
-    Remove,
-    List,
 }
 
 /////////////////////

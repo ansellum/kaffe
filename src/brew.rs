@@ -60,9 +60,6 @@ pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>, conn: &Connect
 }
 
 fn get_id(conn: &Connection, sql: &str, key: &str) -> Result<u32, rusqlite::Error> {
-    dbg!(sql);
-    dbg!(key);
-    println!();
     conn.query_row(
         sql,
         [key],
