@@ -19,10 +19,6 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Modes {
-    Equipment(EquipmentArgs),
-    Bag(BagArgs),
-    Coffee(CoffeeArgs),
-    Brew(BrewArgs),
     Import {
         file: String,
     }
@@ -95,10 +91,7 @@ enum BrewCommands {
 // IMPORT COMMANDS //
 /////////////////////
 
-fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
-    // Connect to SQLite database
-    //let conn = Connection::open_in_memory()?;
-    let conn = Connection::open("./kaffe.db")?;
+fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> {
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -111,39 +104,30 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
         .map(|(i, h)| (h.to_string(), i))
         .collect();
 
-    match headers.len() {
-        5 => { // EQUIPMENT
-            for record in rdr.records() {
-                let mut record = record?;
-                record.trim();
+    for record in rdr.records() {
+        let mut record = record?;
+        record.trim();
+
+        match headers.len() {
+            5 => { // EQUIPMENT
                 let e = equipment::new(record, &header_map)?;
                 conn.execute(&e.to_sql(), [])?;
             }
-        },
-        15 => { // COFFEE
-            for record in rdr.records() {
-                let mut record = record?;
-                record.trim();
+            15 => { // COFFEE
                 let c = coffee::new(record, &header_map)?;
                 conn.execute(&c.to_sql(), [])?;
             }
-        },
-        6 => { // BAGS
-            for record in rdr.records() {
-                let mut record = record?;
-                record.trim();
+            6 => { // BAGS
                 let b = bag::new(record, &header_map, &conn)?;
                 conn.execute(&b.to_sql(), [])?;
             }
-        },
-        11 => { // BREWS
-            for line in rdr.deserialize() {
-                let brew: brew::Brew = line?;
-                dbg!(brew);
+            11 => { // BREWS
+                let b = brew::new(record, &header_map, &conn)?;
+                conn.execute(&b.to_sql(), [])?;
             }
-        },
 
-        _ => panic!("hey man that's not cool")
+            _ => panic!("hey man that's not cool")
+        }
     }
 
     Ok(())
@@ -153,39 +137,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Initialization
     let args = Cli::parse();
 
-    match args.command {
-        // WIZARD
-        Modes::Equipment(equipment) => {
-            match equipment.command {
-                EquipmentCommands::Add => println!("kaffe equipment add"),
-                EquipmentCommands::Remove => println!("kaffe equipment remove"),
-                EquipmentCommands::List => println!("kaffe equipment list"),
-            }
-        }
-        Modes::Bag(bag) => {
-            match bag.command {
-                BagCommands::Add => println!("kaffe bag add"),
-                BagCommands::Remove => println!("kaffe bag remove"),
-                BagCommands::List => println!("kaffe bag list"),
-            }
-        }
-        Modes::Coffee(coffee) => {
-            match coffee.command {
-                CoffeeCommands::Add => println!("kaffe coffee add"),
-                CoffeeCommands::Remove => println!("kaffe coffee remove"),
-                CoffeeCommands::List => println!("kaffe coffee list"),
-            }
-        }
-        Modes::Brew(brew) => {
-            match brew.command {
-                BrewCommands::Add => println!("kaffe brew add"),
-                BrewCommands::Remove => println!("kaffe brew remove"),
-                BrewCommands::List => println!("kaffe brew list"),
-            }
-        }
+    // Connect to SQLite database
+    //let conn = Connection::open_in_memory()?;
+    let conn = Connection::open("./kaffe.db")?;
 
+    match args.command {
         // MAIN
-        Modes::Import { file } => import_from_csv(&file)?
+        Modes::Import { file } => import_from_csv(&conn, &file)?,
     }
 
     Ok(())
