@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS equipment (
     purchase_date DATETIME NOT NULL,
     decommission_date DATETIME DEFAULT NULL,
     price_ct INTEGER NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(name)
 );
 
 CREATE TABLE IF NOT EXISTS coffee (
@@ -50,7 +52,7 @@ CREATE TABLE IF NOT EXISTS brew (
     coffee_g REAL NOT NULL,
     water_g REAL,
     brew_g REAL,
-    temp_c REAL,
+    temp_c INTEGER,
     time_s INTEGER,
     rating INTEGER NOT NULL,
     notes TEXT,
