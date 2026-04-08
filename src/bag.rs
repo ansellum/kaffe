@@ -31,16 +31,8 @@ impl Bag {
 }
 
 pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>, conn: &Connection) -> Result<Bag, Box<dyn Error>> {
-    let coffee_id = conn.query_row(
-        "SELECT id FROM coffee WHERE id = ?1",
-        [&record[h["coffee_id"]]],
-        |row| {
-            row.get(0)
-        }
-    )?;
-
     let b = Bag {
-        coffee_id,
+        coffee_id: get_id(conn, "SELECT id FROM coffee WHERE id = ?1", &record[h["coffee_id"]])?,
         roast_date: format!("{}T00:00:00Z", &record[h["roast_date"]])
             .parse::<Timestamp>()?,
         open_date: none_if_empty(&record[h["open_date"]])
@@ -59,4 +51,14 @@ pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>, conn: &Connect
 
 fn none_if_empty(field: &str) -> Option<String> {
     if field.is_empty() { None } else { Some(field.to_string()) }
+}
+
+fn get_id(conn: &Connection, sql: &str, key: &str) -> Result<u32, rusqlite::Error> {
+    conn.query_row(
+        sql,
+        [key],
+        |row| {
+            row.get(0)
+        }
+    )
 }
