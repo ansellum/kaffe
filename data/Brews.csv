@@ -1,5 +1,5 @@
 bag_id,grinder,brewer,grind_level,coffee_g,water_g,brew_g,temp,time_s,rating,notes
-7,Niche Zero,Espresso,8,18.0,,40.0,n/a,25,3,"A little above average for home-made espresso, but nowhere near the quality of some cafes like Mast. Tastes burnt and slightly bitter, no freshness (likely bc beans have been sitting for a while). 
+7,Niche Zero,Rancilio Silvia,8,18.0,,40.0,,25,3,"A little above average for home-made espresso, but nowhere near the quality of some cafes like Mast. Tastes burnt and slightly bitter, no freshness (likely bc beans have been sitting for a while). 
 For reference, my best home espresso would likely score 85-90.
 
 Added milk bc I’m a latte girly~ "
@@ -7,8 +7,8 @@ Added milk bc I’m a latte girly~ "
 6,Kingrinder K6,V60,90,20.0,301.0,,85,220,3,
 5,Timemore C2,Aeropress,12,18.0,261.6,,99,510,1,"Used to be a favorite, now it just tastes burnt. Oof."
 5,Kingrinder K6,V60,90,20.0,302.0,,85,260,2,Better than last time but still tastes too roasted for me
-13,Niche Zero,Espresso,8,18.0,,40.0,,39,3,Maybe not a big fan of dark roasts anymore
-1,Niche Zero,Espresso,11,18.0,,40.0,,39,3,Made a cortado!
+13,Niche Zero,Rancilio Silvia,8,18.0,,40.0,,39,3,Maybe not a big fan of dark roasts anymore
+1,Niche Zero,Rancilio Silvia,11,18.0,,40.0,,39,3,Made a cortado!
 1,Timemore C2,Aeropress,12,18.1,262.0,,99,600,4,"Not as good as my first brew, but still low acidity despite light roast"
 1,Timemore C2,Aeropress,12,18.0,261.7,,99,480,5,"Really good cup. It’s got strong floral accents, almost like tea, while not being overbearing or acidic like other light roasts"
 1,Kingrinder K6,V60,80,20.0,300.7,,95,240,4,"Not as flavorful as the Aeropress, but maybe cleaner? Still tastes really good."
@@ -47,6 +47,6 @@ Added milk bc I’m a latte girly~ "
 12,Kingrinder K6,V60,80,20.0,300.0,,98,150,4,At least a 90. The fruity notes certainly come through
 12,Kingrinder K6,V60,75,20.0,300.0,,98,180,3,The notes didn’t come through has much as when ground at 80.
 12,Kingrinder K6,V60,80,20.0,300.0,,98,180,5,"Returned to 80 on the K6, tastes just like the 12-19 brew! Definitely better than 12/20; wonder if it’ll be better at 75 and lower temp (maybe 93?) or espresso"
-12,Niche Zero,Espresso,12,18.0,,40.0,94,16,1,Extremely sour
-12,Niche Zero,Espresso,10,18.0,,40.0,94,20,2,Used manual tamp instead of regular; try Niche9 next time?
-1,Niche Zero,Espresso,12,18.0,,40.0,94,31,3,"Better, but beans taste underdeveloped. Should wait a bit longer."
+12,Niche Zero,Rancilio Silvia,12,18.0,,40.0,94,16,1,Extremely sour
+12,Niche Zero,Rancilio Silvia,10,18.0,,40.0,94,20,2,Used manual tamp instead of regular; try Niche9 next time?
+1,Niche Zero,Rancilio Silvia,12,18.0,,40.0,94,31,3,"Better, but beans taste underdeveloped. Should wait a bit longer."
