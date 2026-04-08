@@ -12,8 +12,9 @@ A self-hosted coffee tracking app built using Rust
     - [x] Bag and Coffee are in csv form
         - [x] IDEA! Give structs w/ complex fields (e.g. Vec<>) a dedicated CSV constructor. CSV constructor can be another struct with String fields, wherein the String fields are constructed into vectors during runtime.
         - [x] Better idea: Use a `_str` variant of each `Vec<String>` field, and figure out how to use serde to deserialize from that `_str` field
-- [ ] Fix schema s.t. only unique coffees by (roaster, name) are allowed
+- [x] Fix schema s.t. only unique coffees by (roaster, name) are allowed
 
-- [ ] Begin wizard
+- [x] Begin wizard
+  - [ ] Look into inquire https://github.com/mikaelmello/inquire
 - [ ] Improve error handing
     - Marked in-line
