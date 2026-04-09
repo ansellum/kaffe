@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.6.0", features = ["derive"] }
 csv = "1.4.0"
-inquire = "0.9.4"
+inquire = { version = "0.9.4", features = ["date"] }
 jiff = { version = "0.2.23", features = ["serde"] }
 rusqlite = { version = "0.39.0", features = ["bundled"] }
 serde = { version = "1.0.228", features = ["derive"] }
