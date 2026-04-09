@@ -15,6 +15,14 @@ A self-hosted coffee tracking app built using Rust
 - [x] Fix schema s.t. only unique coffees by (roaster, name) are allowed
 
 - [x] Begin wizard
-  - [ ] Look into inquire https://github.com/mikaelmello/inquire
+  - [x] Look into inquire https://github.com/mikaelmello/inquire
 - [ ] Improve error handing
     - Marked in-line
+
+## Wizard
+
+- [ ] Autocomplete every SQL-retrievable field
+  - **IDEA:** Implement an SQLite retrieve function using the autocompletion trait
+  - Look into `complex_autocompletion.rs` example file in inquire, and documentation (obviously)
+- [ ] Actually test wizard input for equipment (and coffee once completed)
+- [ ] Customize styling
