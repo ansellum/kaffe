@@ -53,28 +53,36 @@ impl Equipment {
 }
 
 pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
-    new(record[h["name"]].to_string(), 
-        record[h["kind"]].to_string(),
-        record[h["purchase_date"]].to_string(),
-        record[h["decomission_date"]].to_string(),
-        record[h["price_ct"]].to_string()
-    )
+    let soul = HashMap::from([
+        ("name", record[h["name"]].to_string()),
+        ("kind", record[h["kind"]].to_string()),
+        ("purchase_date", record[h["purchase_date"]].to_string()),
+        ("decomission_date", record[h["decomission_date"]].to_string()),
+        ("price_ct", record[h["price_ct"]].to_string()),
+    ]);
+
+    new(soul)
 }
 
-pub fn new(name: String, kind: String, purchase_date: String, decomission_date: String, price_ct: String) -> Result<Equipment, Box<dyn Error>> {
+pub fn new(soul: HashMap<&str, String>) -> Result<Equipment, Box<dyn Error>> {
     let e = Equipment {
-        name: name.to_string(),
-        kind: kind.parse::<EquipmentKind>().expect("EquipmentKind parsing error!"),
-        purchase_date: format!("{}T00:00:00Z", purchase_date).parse()?,
-        decommission_date: none_if_empty(decomission_date)
+        name: soul["name"]
+            .to_owned(),
+        kind: soul["kind"]
+            .parse::<EquipmentKind>()
+            .expect("EquipmentKind parsing error!"),
+        purchase_date: format!("{}T00:00:00Z", soul["purchase_date"]).parse()?,
+        decommission_date: none_if_empty(soul["decomission_date"]
+            .to_owned())
             .map(|day| format!("{}T00:00:00Z", day).parse::<Timestamp>())
             .transpose()?,
-        price_ct: price_ct.parse()?,
+        price_ct: soul["price_ct"].parse()?,
         timestamp: Timestamp::now()
     };
 
     Ok(e)
 }
+
 fn none_if_empty(field: String) -> Option<String> {
     if field.is_empty() { None } else { Some(field.to_string()) }
 }
