@@ -1,8 +1,14 @@
 use clap::{Parser, Subcommand};
 use rusqlite::Connection;
 use std::fs;
+use std::fmt;
 use std::error::Error;
 use std::collections::HashMap;
+
+use inquire::{
+    required,
+    CustomType, DateSelect, Select, Text,
+};
 
 pub mod equipment;
 pub mod bag;
@@ -25,7 +31,31 @@ enum Modes {
     Cli
 }
 
-fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> {
+enum Items {
+    Equipment,
+    Coffee,
+    Bag,
+    Brew
+}
+
+impl std::str::FromStr for Items {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Equipment" => Ok(Self::Equipment),
+            "Coffee" => Ok(Self::Coffee),
+            "Bag" => Ok(Self::Bag),
+            "Brew" => Ok(Self::Brew),
+            _ => Err(())
+        }
+    }
+}
+
+fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
+    //let conn = Connection::open_in_memory()?;
+    let conn = Connection::open("./kaffe.db")?;
+
     let schema_str = fs::read_to_string("./kaffe.sql")?;                /* TODO: pattern matching */ 
     conn.execute_batch(&schema_str)
         .expect("Schema reading error!");                               /* TODO: pattern matching */ 
@@ -44,7 +74,7 @@ fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> 
 
         match headers.len() {
             5 => { // EQUIPMENT
-                let e = equipment::new(record, &header_map)?;
+                let e = equipment::new_csv(record, &header_map)?;
                 conn.execute(&e.to_sql(), [])?;
             }
             15 => { // COFFEE
@@ -67,58 +97,59 @@ fn import_from_csv(conn: &Connection, path: &str) -> Result<(), Box<dyn Error>> 
     Ok(())
 }
 
-fn wizard(_conn: &Connection) -> Result<(), Box<dyn Error>> {
-    let mut input = String::new();
+fn equipment_wizard() -> Result<(), Box<dyn Error>> {
+    let _name = Text::new("Name:")
+                .with_validator(required!("You wouldn't forget to name your own child, would you?"))
+                .with_help_message("Name your vessel.")
+                .prompt()?;
 
-    println!("____________________________________________________________________________________________");
-    println!("\nHello! Welcome to kaffe!");
-    println!("This wizard will guide you through adding new items.\n");
-    println!("What are you planning to add today?\n  [1] Equipment\n  [2] Coffee\n  [3] Bag\n  [4] Brew\n");
+    let _kind = Select::new("Kind:", vec!["Brewer", "Grinder"]).prompt()?;
 
-    std::io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
+    let _purchase_date = DateSelect::new("Purchase Date:")
+        .prompt()?;
 
-    let input = input.trim();
-    match input.parse()? {
-        1 => {
-            println!("____________________________________________________________________________________________");
-            println!("\nThanks! Importing equipment now..."); 
-        },
-        2 => {
-            println!("____________________________________________________________________________________________");
-            println!("\nThanks! Importing coffee now..."); 
-            
-        },
-        3 => {
-            println!("____________________________________________________________________________________________");
-            println!("\nThanks! Importing bag now..."); 
+    let _price: f64 = CustomType::new("Amount:")
+        .with_formatter(&|i: f64| format!("${i}"))
+        .with_error_message("That isn't right.")
+        .with_help_message("How much did this cost you?")
+        .prompt()
+        .unwrap();
 
-        },
-        4 => {
-            println!("____________________________________________________________________________________________");
-            println!("\nThanks! Importing brew now..."); 
-            
-        },
-        _ => println!("Invalid!")
-    };
+    let price_ct = (_price  * 100.0).trunc().to_string();
 
-    println!("You typed: {}", input);
+    let e = equipment::new(_name, _kind.to_string(), _purchase_date.to_string(), String::new(), price_ct)?;
+
+    //let conn = Connection::open_in_memory()?;
+    let conn = Connection::open("./kaffe.db")?;
+    conn.execute(&e.to_sql(), [])?;
+
+    println!("Your entry has been successfully recorded.");
+    println!("We thank you for your participation.");
 
     Ok(())
+}
+
+/// Wizard Functions
+fn wizard() -> Result<(), Box<dyn Error>> {
+    let _category = Select::new("Item:", vec!["Equipment", "Coffee", "Bag", "Brew"]).prompt()?;
+
+    let category = _category.parse::<Items>().expect("How very, very interesting.");
+
+    match category {
+        Items::Equipment => equipment_wizard(),
+        Items::Coffee => coffee_wizard(),
+        Items::Bag=> bag_wizard(),
+        Items::Brew => brew_wizard(),
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialization
     let args = Cli::parse();
 
-    // Connect to SQLite database
-    //let conn = Connection::open_in_memory()?;
-    let conn = Connection::open("./kaffe.db")?;
-
     match args.command {
-        Modes::Import { file } => import_from_csv(&conn, &file)?,
-        Modes::Cli => wizard(&conn)?,
+        Modes::Import { file } => import_from_csv(&file)?,
+        Modes::Cli => wizard()?,
     }
 
     Ok(())
