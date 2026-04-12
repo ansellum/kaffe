@@ -19,7 +19,7 @@ impl std::str::FromStr for EquipmentKind {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        match s.to_lowercase().as_str() {
             "grinder" => Ok(Self::Grinder),
             "brewer" => Ok(Self::Brewer),
             _ => Err(()),
