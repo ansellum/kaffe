@@ -2,27 +2,16 @@
 A self-hosted coffee tracking app built using Rust
 
 # TODO
-- [x] Define command line input
-- [x] Write helper default function for wrong command input
-- [x] Figure out help message behavior
-- [x] Figure out ID system 
-    - Will use SQLite database tags
-- [x] Save temporary structs of each data type
-    - [x] Equipment is in json form
-    - [x] Bag and Coffee are in csv form
-        - [x] IDEA! Give structs w/ complex fields (e.g. Vec<>) a dedicated CSV constructor. CSV constructor can be another struct with String fields, wherein the String fields are constructed into vectors during runtime.
-        - [x] Better idea: Use a `_str` variant of each `Vec<String>` field, and figure out how to use serde to deserialize from that `_str` field
-- [x] Fix schema s.t. only unique coffees by (roaster, name) are allowed
-
-- [x] Begin wizard
-  - [x] Look into inquire https://github.com/mikaelmello/inquire
-- [ ] Improve error handing
-    - Marked in-line
+- [ ] Write custom error type
+- [ ] automatically capticalize or lowercase items for standardization
+  - varietals, region, country, etc.
 
 ## Wizard
 
 - [ ] Autocomplete every SQL-retrievable field
-  - **IDEA:** Implement an SQLite retrieve function using the autocompletion trait
-  - Look into `complex_autocompletion.rs` example file in inquire, and documentation (obviously)
-- [ ] Actually test wizard input for equipment (and coffee once completed)
+  - [x] Look into `complex_autocompletion.rs` example file in inquire, and documentation (obviously)
+  - [ ] Pre-initialize items in item wizards s.t. autocomplete can inherit previous entries
+    - country -> region -> farm -> producer
+- [x] Actually test wizard input for equipment (and coffee once completed)
+- [ ] Finish bag and brew wizards
 - [ ] Customize styling
