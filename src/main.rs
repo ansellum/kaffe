@@ -30,27 +30,6 @@ enum Modes {
     Cli
 }
 
-enum Items {
-    Equipment,
-    Coffee,
-    // Bag,
-    // Brew
-}
-
-impl std::str::FromStr for Items {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Equipment" => Ok(Self::Equipment),
-            "Coffee" => Ok(Self::Coffee),
-            // "Bag" => Ok(Self::Bag),
-            // "Brew" => Ok(Self::Brew),
-            _ => Err(())
-        }
-    }
-}
-
 fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     //let conn = Connection::open_in_memory()?;
     let conn = Connection::open("./kaffe.db")?;
@@ -94,6 +73,27 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+enum Items {
+    Equipment,
+    Coffee,
+    // Bag,
+    // Brew
+}
+
+impl std::str::FromStr for Items {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Equipment" => Ok(Self::Equipment),
+            "Coffee" => Ok(Self::Coffee),
+            // "Bag" => Ok(Self::Bag),
+            // "Brew" => Ok(Self::Brew),
+            _ => Err(())
+        }
+    }
 }
 
 fn equipment_wizard() -> Result<(), Box<dyn Error>> {
@@ -260,7 +260,7 @@ fn wizard() -> Result<(), Box<dyn Error>> {
     match category {
         Items::Equipment => equipment_wizard(),
         Items::Coffee => coffee_wizard(),
-        // Items::Bag=> bag_wizard(),
+        //Items::Bag=> bag_wizard(),
         // Items::Brew => brew_wizard(),
     }
 }

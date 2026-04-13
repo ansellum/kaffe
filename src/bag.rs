@@ -17,16 +17,15 @@ pub struct Bag {
 
 impl Bag {
     pub fn to_sql(&self) -> String {format!(
-            "INSERT INTO bag (coffee_id, roast_date, open_date, empty_date, weight_g, price_ct, timestamp) 
-                VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')", 
-            self.coffee_id.to_string(),
-            self.roast_date.to_string(),
-            self.open_date.map_or(String::new(), |t| t.to_string()),
-            self.empty_date.map_or(String::new(), |t| t.to_string()),
-            self.weight_g,
-            self.price_ct,
-            self.timestamp.to_string(),
-        )
+        "INSERT INTO bag (coffee_id, roast_date, open_date, empty_date, weight_g, price_ct, timestamp) 
+            VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')", 
+        self.coffee_id.to_string(),
+        self.roast_date.to_string(),
+        self.open_date.map_or(String::new(), |t| t.to_string()),
+        self.empty_date.map_or(String::new(), |t| t.to_string()),
+        self.weight_g,
+        self.price_ct,
+        self.timestamp.to_string())
     }
 }
 
@@ -34,10 +33,10 @@ pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Resul
     let soul = HashMap::from([
         ("coffee_id", &record[h["coffee_id"]]),
         ("roast_date", &record[h["roast_date"]]),
-        ("kind", &record[h["open_date"]]),
-        ("country", &record[h["empty_date"]]),
-        ("region", &record[h["weight_g"]]),
-        ("farm", &record[h["price_ct"]]),
+        ("open_date", &record[h["open_date"]]),
+        ("empty_date", &record[h["empty_date"]]),
+        ("weight_g", &record[h["weight_g"]]),
+        ("price_ct", &record[h["price_ct"]]),
     ]);
 
     build(soul)
