@@ -145,8 +145,8 @@ pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<
 
 pub fn new(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
     let c = Coffee {
-        roaster: soul["roaster"].to_string(),
-        name: soul["name"].to_string(),
+        roaster: soul["roaster"].to_owned(),
+        name: soul["name"].to_owned(),
         kind: soul["kind"]
             .parse::<CoffeeKind>()
             .expect("CoffeeKind parse error!"),
@@ -187,7 +187,7 @@ pub fn new(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
 }
 
 fn none_if_empty(field: &str) -> Option<String> {
-    if field.is_empty() { None } else { Some(field.to_string()) }
+    if field.is_empty() { None } else { Some(field.to_owned()) }
 }
 
 pub fn roaster_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {

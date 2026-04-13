@@ -54,17 +54,17 @@ impl Equipment {
 
 pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
     let soul = HashMap::from([
-        ("name", record[h["name"]].to_string()),
-        ("kind", record[h["kind"]].to_string()),
-        ("purchase_date", record[h["purchase_date"]].to_string()),
-        ("decomission_date", record[h["decomission_date"]].to_string()),
-        ("price_ct", record[h["price_ct"]].to_string()),
+        ("name", &record[h["name"]]),
+        ("kind", &record[h["kind"]]),
+        ("purchase_date", &record[h["purchase_date"]]),
+        ("decomission_date", &record[h["decomission_date"]]),
+        ("price_ct", &record[h["price_ct"]]),
     ]);
 
-    new(soul)
+    build(soul)
 }
 
-pub fn new(soul: HashMap<&str, String>) -> Result<Equipment, Box<dyn Error>> {
+pub fn build(soul: HashMap<&str, &str>) -> Result<Equipment, Box<dyn Error>> {
     let e = Equipment {
         name: soul["name"]
             .to_owned(),
@@ -84,5 +84,5 @@ pub fn new(soul: HashMap<&str, String>) -> Result<Equipment, Box<dyn Error>> {
 }
 
 fn none_if_empty(field: String) -> Option<String> {
-    if field.is_empty() { None } else { Some(field.to_string()) }
+    if field.is_empty() { None } else { Some(field.to_owned()) }
 }

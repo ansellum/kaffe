@@ -125,12 +125,12 @@ fn equipment_wizard() -> Result<(), Box<dyn Error>> {
 
     let price_ct = (_price  * 100.0).trunc().to_string();
 
-    let e = equipment::new(HashMap::from([
-        ("name", _name),
-        ("kind", _kind),
-        ("purchase_date", _purchase_date),
-        ("decomission_date", _decomission_date),
-        ("price_ct", price_ct),
+    let e = equipment::build(HashMap::from([
+        ("name", _name.as_str()),
+        ("kind", _kind.as_str()),
+        ("purchase_date", _purchase_date.as_str()),
+        ("decomission_date", _decomission_date.as_str()),
+        ("price_ct", price_ct.as_str()),
     ]))?;
 
     //let conn = Connection::open_in_memory()?;
