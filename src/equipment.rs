@@ -52,7 +52,7 @@ impl Equipment {
     }
 }
 
-pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
+pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
     let soul = HashMap::from([
         ("name", &record[h["name"]]),
         ("kind", &record[h["kind"]]),

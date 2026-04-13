@@ -30,19 +30,32 @@ impl Bag {
     }
 }
 
-pub fn new(record: csv::StringRecord, h: &HashMap<String, usize>, conn: &Connection) -> Result<Bag, Box<dyn Error>> {
+pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Bag, Box<dyn Error>> {
+    let soul = HashMap::from([
+        ("coffee_id", &record[h["coffee_id"]]),
+        ("roast_date", &record[h["roast_date"]]),
+        ("kind", &record[h["open_date"]]),
+        ("country", &record[h["empty_date"]]),
+        ("region", &record[h["weight_g"]]),
+        ("farm", &record[h["price_ct"]]),
+    ]);
+
+    build(soul)
+}
+
+pub fn build(soul: HashMap<&str, &str>) -> Result<Bag, Box<dyn Error>> {
     let b = Bag {
-        coffee_id: get_id(conn, "SELECT id FROM coffee WHERE id = ?1", &record[h["coffee_id"]])?,
-        roast_date: format!("{}T00:00:00Z", &record[h["roast_date"]])
+        coffee_id: get_id("SELECT id FROM coffee WHERE id = ?1", soul["coffee_id"])?,
+        roast_date: format!("{}T00:00:00Z", soul["roast_date"])
             .parse::<Timestamp>()?,
-        open_date: none_if_empty(&record[h["open_date"]])
+        open_date: none_if_empty(soul["open_date"])
             .map(|day| format!("{}T00:00:00Z", day).parse::<Timestamp>())
             .transpose()?,
-        empty_date: none_if_empty(&record[h["empty_date"]])
+        empty_date: none_if_empty(soul["empty_date"])
             .map(|day| format!("{}T00:00:00Z", day).parse::<Timestamp>())
             .transpose()?,
-        weight_g: record[h["weight_g"]].parse::<u16>()?,
-        price_ct: record[h["price_ct"]].parse::<u16>()?,
+        weight_g: soul["weight_g"].parse::<u16>()?,
+        price_ct: soul["price_ct"].parse::<u16>()?,
         timestamp: Timestamp::now(),
     };
 
@@ -53,7 +66,9 @@ fn none_if_empty(field: &str) -> Option<String> {
     if field.is_empty() { None } else { Some(field.to_string()) }
 }
 
-fn get_id(conn: &Connection, sql: &str, key: &str) -> Result<u32, rusqlite::Error> {
+fn get_id(sql: &str, key: &str) -> Result<u32, rusqlite::Error> {
+    let conn = Connection::open("./kaffe.db")?;
+    
     conn.query_row(
         sql,
         [key],

@@ -73,15 +73,15 @@ fn import_from_csv(path: &str) -> Result<(), Box<dyn Error>> {
 
         match headers.len() {
             5 => { // EQUIPMENT
-                let e = equipment::new_csv(record, &header_map)?;
+                let e = equipment::build_csv(record, &header_map)?;
                 conn.execute(&e.to_sql(), [])?;
             }
             15 => { // COFFEE
-                let c = coffee::new_csv(record, &header_map)?;
+                let c = coffee::build_csv(record, &header_map)?;
                 conn.execute(&c.to_sql(), [])?;
             }
             6 => { // BAGS
-                let b = bag::new(record, &header_map, &conn)?;
+                let b = bag::build_csv(record, &header_map)?;
                 conn.execute(&b.to_sql(), [])?;
             }
             11 => { // BREWS
@@ -223,7 +223,7 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
         .with_validator(required!("C'mon, it's on the label"))
         .prompt()?;        
 
-    let c = coffee::new(HashMap::from([
+    let c = coffee::build(HashMap::from([
         ("roaster", roaster.as_str()),
         ("name", name.as_str()),
         ("roast_level", roast_level),

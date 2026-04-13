@@ -121,7 +121,7 @@ impl Coffee {
     }
 }
 
-pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
+pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
     let soul = HashMap::from([
         ("roaster", &record[h["roaster"]]),
         ("name", &record[h["name"]]),
@@ -140,10 +140,10 @@ pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<
         ("decaf", &record[h["decaf"]]),
     ]);
 
-    new(soul)
+    build(soul)
 }
 
-pub fn new(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
+pub fn build(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
     let c = Coffee {
         roaster: soul["roaster"].to_owned(),
         name: soul["name"].to_owned(),
