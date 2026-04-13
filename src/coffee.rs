@@ -5,8 +5,9 @@ use std::error::Error;
 use std::collections::{HashMap, HashSet};
 use inquire::error::CustomUserError;
 
-#[derive(Debug)]
-enum CoffeeKind {
+#[derive(Default, Debug)]
+pub enum CoffeeKind {
+    #[default]
     SingleOrigin,
     Blend
 }
@@ -32,8 +33,9 @@ impl std::str::FromStr for CoffeeKind {
     }
 }
 
-#[derive(Debug)]
-enum RoastLevel {
+#[derive(Default, Debug)]
+pub enum RoastLevel {
+    #[default]
     Light,
     Medium,
     Dark,
@@ -62,26 +64,26 @@ impl std::str::FromStr for RoastLevel {
     }
 }
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 pub struct Coffee {
-    roaster: String,
-    name: String,
-    roast_level: RoastLevel,
-    kind: CoffeeKind,
-    country: Option<String>,
-    region: Option<String>,
-    farm: Option<String>,
-    producer: Option<String>,
-    varietals: Option<Vec<String>>,
-    altitude_m: Option<u16>,
-    altitude_lower_m: Option<u16>,
-    altitude_upper_m: Option<u16>,
-    process: Option<String>,
-    decaf: bool,
+    pub roaster: String,
+    pub name: String,
+    pub roast_level: RoastLevel,
+    pub kind: CoffeeKind,
+    pub country: Option<String>,
+    pub region: Option<String>,
+    pub farm: Option<String>,
+    pub producer: Option<String>,
+    pub varietals: Option<Vec<String>>,
+    pub altitude_m: Option<u16>,
+    pub altitude_lower_m: Option<u16>,
+    pub altitude_upper_m: Option<u16>,
+    pub process: Option<String>,
+    pub decaf: bool,
 
-    tasting_notes: Vec<String>,
+    pub tasting_notes: Vec<String>,
 
-    timestamp: Timestamp,
+    pub timestamp: Timestamp,
 }
 
 impl Coffee {
@@ -106,22 +108,81 @@ impl Coffee {
                 .as_deref()
                 .unwrap_or_default(),
             self.varietals
-                .as_deref()
-                .map_or_else(|| String::new(), |s| format!("{:?}", s)),
-            self.altitude_m.map_or(String::new(), |num| num.to_string()),
-            self.altitude_lower_m.map_or(String::new(), |num| num.to_string()),
-            self.altitude_upper_m.map_or(String::new(), |num| num.to_string()),
-            self.process
-                .as_deref()
-                .unwrap_or_default(),
-            self.decaf,
-            format!("{:?}", self.tasting_notes),
-            self.timestamp.to_string()
+                    .as_deref()
+                    .map_or_else(|| String::new(), |s| format!("{:?}", s)),
+                self.altitude_m.map_or(String::new(), |num| num.to_string()),
+                self.altitude_lower_m.map_or(String::new(), |num| num.to_string()),
+                self.altitude_upper_m.map_or(String::new(), |num| num.to_string()),
+                self.process
+                    .as_deref()
+                    .unwrap_or_default(),
+                self.decaf,
+                format!("{:?}", self.tasting_notes),
+                self.timestamp.to_string()
         )
     }
+
+    // Trait error, but the below should work for cascading autocomplete
+    // pub fn country_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+    //     suggestor(input, "SELECT country FROM coffee")
+    // }
+
+    // pub fn region_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+    //     let sql = format!(
+    //         "SELECT region FROM coffee 
+    //             WHERE country = {}",
+    //         self.country
+    //             .as_ref()
+    //             .expect("Region:country wizard error")
+    //     );
+
+    //     suggestor(input, &sql)
+    // }
+
+    // pub fn farm_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+    //     let sql = format!(
+    //         "SELECT region FROM coffee 
+    //             WHERE country = {}
+    //             AND region = {}",
+    //         self.country
+    //             .as_ref()
+    //             .expect("Farm:country wizard error"),
+    //         self.region
+    //             .as_ref()
+    //             .expect("Farm:region wizard error")
+    //     );
+
+    //     suggestor(input, &sql)
+    // }
+
+    // pub fn producer_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+    //     let sql = format!(
+    //         "SELECT region FROM coffee 
+    //             WHERE country = {}
+    //             AND region = {},
+    //             AND farm = {}",
+    //         self.country
+    //             .as_ref()
+    //             .expect("Producer:country wizard error"),
+    //         self.region
+    //             .as_ref()
+    //             .expect("Producer:region wizard error"),
+    //         self.farm
+    //             .as_ref()
+    //             .expect("PRoducer:farm wizard error")
+    //     );
+
+    //     suggestor(input, &sql)
+    // }
 }
 
-pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
+
+pub fn new() -> Coffee {
+    Coffee::default()
+}
+
+
+pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Coffee, Box<dyn Error>> {
     let soul = HashMap::from([
         ("roaster", &record[h["roaster"]]),
         ("name", &record[h["name"]]),
@@ -140,10 +201,10 @@ pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<
         ("decaf", &record[h["decaf"]]),
     ]);
 
-    new(soul)
+    build(soul)
 }
 
-pub fn new(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
+fn build(soul: HashMap<&str, &str>) -> Result<Coffee, Box<dyn Error>> {
     let c = Coffee {
         roaster: soul["roaster"].to_owned(),
         name: soul["name"].to_owned(),
