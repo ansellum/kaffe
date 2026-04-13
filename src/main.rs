@@ -172,25 +172,25 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
         c.country = Text::new("Country:")
             .with_placeholder("Ethiopia")
             .with_validator(required!("You chose this."))
-            .with_autocomplete(&coffee::country_suggestor)
+            .with_autocomplete(&c.country_suggestor)
             .prompt()
             .ok();
 
         c.region = Text::new("Region:")
             .with_placeholder("Bener Meriah, Aceh")
-            .with_autocomplete(&coffee::region_suggestor)
+            .with_autocomplete(&c.region_suggestor)
             .prompt()
             .ok();
 
         c.farm = Text::new("Farm:")
             .with_placeholder("Dawencho")
-            .with_autocomplete(&coffee::farm_suggestor)
+            .with_autocomplete(&c.farm_suggestor)
             .prompt()
             .ok();
         
         c.producer = Text::new("Producer:")
             .with_placeholder("Mullugeta Muntasha")
-            .with_autocomplete(&coffee::producer_suggestor)
+            .with_autocomplete(&c.producer_suggestor)
             .prompt()
             .ok();
 

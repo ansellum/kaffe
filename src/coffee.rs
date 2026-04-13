@@ -122,58 +122,57 @@ impl Coffee {
         )
     }
 
-    // Trait error, but the below should work for cascading autocomplete
-    // pub fn country_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
-    //     suggestor(input, "SELECT country FROM coffee")
-    // }
+    pub fn country_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+        suggestor(input, "SELECT country FROM coffee")
+    }
 
-    // pub fn region_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
-    //     let sql = format!(
-    //         "SELECT region FROM coffee 
-    //             WHERE country = {}",
-    //         self.country
-    //             .as_ref()
-    //             .expect("Region:country wizard error")
-    //     );
+    pub fn region_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+        let sql = format!(
+            "SELECT region FROM coffee 
+                WHERE country = {}",
+            self.country
+                .as_ref()
+                .expect("Region:country wizard error")
+        );
 
-    //     suggestor(input, &sql)
-    // }
+        suggestor(input, &sql)
+    }
 
-    // pub fn farm_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
-    //     let sql = format!(
-    //         "SELECT region FROM coffee 
-    //             WHERE country = {}
-    //             AND region = {}",
-    //         self.country
-    //             .as_ref()
-    //             .expect("Farm:country wizard error"),
-    //         self.region
-    //             .as_ref()
-    //             .expect("Farm:region wizard error")
-    //     );
+    pub fn farm_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+        let sql = format!(
+            "SELECT region FROM coffee 
+                WHERE country = {}
+                AND region = {}",
+            self.country
+                .as_ref()
+                .expect("Farm:country wizard error"),
+            self.region
+                .as_ref()
+                .expect("Farm:region wizard error")
+        );
 
-    //     suggestor(input, &sql)
-    // }
+        suggestor(input, &sql)
+    }
 
-    // pub fn producer_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
-    //     let sql = format!(
-    //         "SELECT region FROM coffee 
-    //             WHERE country = {}
-    //             AND region = {},
-    //             AND farm = {}",
-    //         self.country
-    //             .as_ref()
-    //             .expect("Producer:country wizard error"),
-    //         self.region
-    //             .as_ref()
-    //             .expect("Producer:region wizard error"),
-    //         self.farm
-    //             .as_ref()
-    //             .expect("PRoducer:farm wizard error")
-    //     );
+    pub fn producer_suggestor(&self, input: &str) -> Result<Vec<String>, CustomUserError> {
+        let sql = format!(
+            "SELECT region FROM coffee 
+                WHERE country = {}
+                AND region = {},
+                AND farm = {}",
+            self.country
+                .as_ref()
+                .expect("Producer:country wizard error"),
+            self.region
+                .as_ref()
+                .expect("Producer:region wizard error"),
+            self.farm
+                .as_ref()
+                .expect("PRoducer:farm wizard error")
+        );
 
-    //     suggestor(input, &sql)
-    // }
+        suggestor(input, &sql)
+    }
 }
 
 
@@ -253,22 +252,6 @@ fn none_if_empty(field: &str) -> Option<String> {
 
 pub fn roaster_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {
     suggestor(input, "SELECT roaster FROM coffee")
-}
-
-pub fn country_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {
-    suggestor(input, "SELECT country FROM coffee")
-}
-
-pub fn region_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {
-    suggestor(input, "SELECT region FROM coffee")
-}
-
-pub fn farm_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {
-    suggestor(input, "SELECT farm FROM coffee")
-}
-
-pub fn producer_suggestor(input: &str) -> Result<Vec<String>, CustomUserError> {
-    suggestor(input, "SELECT producer FROM coffee")
 }
 
 fn suggestor(input: &str, sql: &str) -> Result<Vec<String>, CustomUserError> {
