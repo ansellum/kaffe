@@ -3,9 +3,8 @@ use std::fmt;
 use std::error::Error;
 use std::collections::HashMap;
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub enum EquipmentKind {
-    #[default]
     Brewer,
     Grinder,
 }
@@ -28,14 +27,14 @@ impl std::str::FromStr for EquipmentKind {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Equipment {
-    pub name: String,
-    pub kind: EquipmentKind,
-    pub price_ct: u32,
-    pub purchase_date: Timestamp,
-    pub decommission_date: Option<Timestamp>,
-    pub timestamp: Timestamp,
+    name: String,
+    kind: EquipmentKind,
+    price_ct: u32,
+    purchase_date: Timestamp,
+    decommission_date: Option<Timestamp>,
+    timestamp: Timestamp,
 }
 
 impl Equipment {
@@ -53,11 +52,7 @@ impl Equipment {
     }
 }
 
-pub fn new() -> Equipment {
-    Equipment::default()
-}
-
-pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
+pub fn new_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Result<Equipment, Box<dyn Error>> {
     let soul = HashMap::from([
         ("name", &record[h["name"]]),
         ("kind", &record[h["kind"]]),
@@ -69,7 +64,7 @@ pub fn build_csv(record: csv::StringRecord, h: &HashMap<String, usize>) -> Resul
     build(soul)
 }
 
-fn build(soul: HashMap<&str, &str>) -> Result<Equipment, Box<dyn Error>> {
+pub fn build(soul: HashMap<&str, &str>) -> Result<Equipment, Box<dyn Error>> {
     let e = Equipment {
         name: soul["name"]
             .to_owned(),
