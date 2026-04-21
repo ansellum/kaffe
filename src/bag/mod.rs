@@ -3,6 +3,8 @@ use std::error::Error;
 use rusqlite::Connection; // Assume coffees exist!
 use std::collections::HashMap;
 
+pub mod inquire;
+
 #[derive(Debug)]
 pub struct Bag {
     coffee_id: u32,
