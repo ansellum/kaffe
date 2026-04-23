@@ -3,8 +3,9 @@ use std::fmt;
 use std::error::Error;
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 pub enum EquipmentKind {
+    #[default]
     Brewer,
     Grinder,
 }
@@ -27,7 +28,7 @@ impl std::str::FromStr for EquipmentKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 pub struct Equipment {
     name: String,
     kind: EquipmentKind,

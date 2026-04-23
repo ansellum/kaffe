@@ -5,8 +5,9 @@ use std::collections::HashMap;
 
 pub mod inquire;
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 enum CoffeeKind {
+    #[default]
     SingleOrigin,
     Blend
 }
@@ -32,8 +33,9 @@ impl std::str::FromStr for CoffeeKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 enum RoastLevel {
+    #[default]
     Light,
     Medium,
     Dark,
@@ -62,7 +64,7 @@ impl std::str::FromStr for RoastLevel {
     }
 }
 
-#[derive(Debug)]
+#[derive(Default, Debug)]
 pub struct Coffee {
     roaster: String,
     name: String,

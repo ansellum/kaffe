@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 pub mod inquire;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Bag {
     coffee_id: u32,
     roast_date: Timestamp,
