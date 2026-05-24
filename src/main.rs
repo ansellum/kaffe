@@ -146,7 +146,7 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
     let roaster = Text::new("Roaster:")
         .with_validator(required!("You can't skip this."))
         .with_help_message("Name the roaster.")
-        .with_autocomplete(&coffee::roaster_suggestor)
+        .with_autocomplete(&coffee::inquire::roaster_suggestor)
         .prompt()?;
 
     let name = Text::new("Name:")
@@ -169,27 +169,28 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
     let mut altitude_m = String::new();
     let mut altitude_lower_m = String::new();
     let mut altitude_upper_m = String::new();
+    let mut process = String::new();
 
     if kind == "single-origin" {
         country = Text::new("Country:")
             .with_placeholder("Ethiopia")
             .with_validator(required!("You chose this."))
-            .with_autocomplete(&coffee::country_suggestor)
+            .with_autocomplete(&coffee::inquire::country_suggestor)
             .prompt()?;
 
         region = Text::new("Region:")
             .with_placeholder("Bener Meriah, Aceh")
-            .with_autocomplete(&coffee::region_suggestor)
+            .with_autocomplete(&coffee::inquire::region_suggestor)
             .prompt()?;
 
         farm = Text::new("Farm:")
             .with_placeholder("Dawencho")
-            .with_autocomplete(&coffee::farm_suggestor)
+            .with_autocomplete(&coffee::inquire::farm_suggestor)
             .prompt()?;
         
         producer = Text::new("Producer:")
             .with_placeholder("Mullugeta Muntasha")
-            .with_autocomplete(&coffee::producer_suggestor)
+            .with_autocomplete(&coffee::inquire::producer_suggestor)
             .prompt()?;
 
         varietals = Text::new("Varietals:")
@@ -205,12 +206,13 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
                 .prompt()?;
             altitude_upper_m = Text::new("Altitude Upper (MASL):")
                 .prompt()?;
+
+        process = Select::new("Process:", vec!["natural", "washed", "wet-hulled", "honey"])
+            .prompt_skippable()?
+            .unwrap()
+            .to_string();
         }
     }
-
-    let process = Select::new("Process:", vec!["natural", "washed", "wet-hulled", "honey"])
-        .prompt_skippable()?
-        .unwrap_or_default();
 
     let decaf = match Select::new("Decaf:", vec!["Yes", "No"]).prompt()? {
         "Yes" => "yippee!".to_string(),
@@ -236,7 +238,7 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
         ("altitude_m", altitude_m.as_str()),
         ("altitude_lower_m", altitude_lower_m.as_str()),
         ("altitude_upper_m", altitude_upper_m.as_str()),
-        ("process", process),
+        ("process", process.as_str()),
         ("decaf", decaf.as_str()),
         ("tasting_notes", tasting_notes.as_str()),
     ]))?;
