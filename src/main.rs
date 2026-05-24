@@ -142,6 +142,7 @@ fn equipment_wizard() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
 fn coffee_wizard() -> Result<(), Box<dyn Error>> {
     let roaster = Text::new("Roaster:")
         .with_validator(required!("You can't skip this."))
@@ -206,12 +207,12 @@ fn coffee_wizard() -> Result<(), Box<dyn Error>> {
                 .prompt()?;
             altitude_upper_m = Text::new("Altitude Upper (MASL):")
                 .prompt()?;
+        }
 
         process = Select::new("Process:", vec!["natural", "washed", "wet-hulled", "honey"])
             .prompt_skippable()?
-            .unwrap()
+            .unwrap_or_default()
             .to_string();
-        }
     }
 
     let decaf = match Select::new("Decaf:", vec!["Yes", "No"]).prompt()? {
